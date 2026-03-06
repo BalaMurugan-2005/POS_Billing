@@ -1,28 +1,93 @@
 import React, { useState, useEffect } from 'react';
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { useAuth } from '../../hooks/useAuth';
 import { transactionService } from '../../services/transactionService';
 import { format } from 'date-fns';
-import { DocumentTextIcon, QrCodeIcon, UserIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
+import { DocumentTextIcon, QrCodeIcon, UserIcon, ShoppingBagIcon, CreditCardIcon } from '@heroicons/react/24/outline';
 import { productService } from '../../services/productService';
 import { useCart } from '../../hooks/useCart';
 import toast from 'react-hot-toast';
 
 const CustomerDashboard = () => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('qr');
+  const [activeTab, setActiveTab] = useState('shopping');
   const { cart, addItem, removeItem, updateQuantity } = useCart();
+  const [products, setProducts] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [paymentRequest, setPaymentRequest] = useState(null); // { id, amount, method, items }
 
   useEffect(() => {
     if (activeTab === 'history') {
       fetchTransactionHistory();
     }
+    if (activeTab === 'shopping') {
+      fetchProducts();
+    }
   }, [activeTab]);
+
+  // Listen for payment requests from the cashier
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      // LocalStorage event only fires on OTHER tabs
+      if (e.key === 'active_payment_request' && e.newValue) {
+        const parsed = JSON.parse(e.newValue);
+        if (String(parsed.customerId) === String(user?.id)) {
+          console.log('Payment request received:', parsed);
+          setPaymentRequest(parsed);
+          setActiveTab('billing');
+          toast('New Payment Request Received!', {
+            icon: '💳',
+            duration: 4000
+          });
+        }
+      }
+    };
+
+    // For the SAME tab (if testing in one window)
+    const checkInterval = setInterval(() => {
+      const activeRequest = localStorage.getItem('active_payment_request');
+      if (activeRequest) {
+        const parsed = JSON.parse(activeRequest);
+        if (String(parsed.customerId) === String(user?.id) && !paymentRequest) {
+          setPaymentRequest(parsed);
+          setActiveTab('billing');
+        }
+      }
+    }, 1000);
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(checkInterval);
+    };
+  }, [user, paymentRequest]);
+
+  const handleConfirmPayment = () => {
+    toast.loading('Processing payment...', { id: 'paying' });
+    setTimeout(() => {
+      const result = { ...paymentRequest, status: 'paid', timestamp: new Date().toISOString() };
+      localStorage.setItem('payment_result', JSON.stringify(result));
+      localStorage.removeItem('active_payment_request');
+      toast.success('Payment successful!', { id: 'paying' });
+      setPaymentRequest(null);
+    }, 2000);
+  };
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const data = await productService.getProducts();
+      setProducts(data);
+    } catch (error) {
+      toast.error('Failed to load products');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchTransactionHistory = async () => {
     setLoading(true);
@@ -89,38 +154,48 @@ const CustomerDashboard = () => {
           <button
             onClick={() => setActiveTab('qr')}
             className={`pb-4 px-1 flex items-center gap-2 border-b-2 font-medium text-sm ${activeTab === 'qr'
-                ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ? 'border-primary-500 text-primary-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
           >
             <QrCodeIcon className="w-5 h-5" />
             My QR Code
           </button>
           <button
-            onClick={() => setActiveTab('history')}
-            className={`pb-4 px-1 flex items-center gap-2 border-b-2 font-medium text-sm ${activeTab === 'history'
-                ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-          >
-            <DocumentTextIcon className="w-5 h-5" />
-            Purchase History
-          </button>
-          <button
             onClick={() => setActiveTab('shopping')}
             className={`pb-4 px-1 flex items-center gap-2 border-b-2 font-medium text-sm ${activeTab === 'shopping'
-                ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ? 'border-primary-500 text-primary-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
           >
             <ShoppingBagIcon className="w-5 h-5" />
             Self Shopping
           </button>
           <button
+            onClick={() => setActiveTab('billing')}
+            className={`pb-4 px-1 flex items-center gap-2 border-b-2 font-medium text-sm ${activeTab === 'billing'
+              ? 'border-primary-500 text-primary-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+          >
+            <CreditCardIcon className="w-5 h-5" />
+            Billing
+          </button>
+          <button
+            onClick={() => setActiveTab('history')}
+            className={`pb-4 px-1 flex items-center gap-2 border-b-2 font-medium text-sm ${activeTab === 'history'
+              ? 'border-primary-500 text-primary-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+          >
+            <DocumentTextIcon className="w-5 h-5" />
+            Purchase History
+          </button>
+          <button
             onClick={() => setActiveTab('profile')}
             className={`pb-4 px-1 flex items-center gap-2 border-b-2 font-medium text-sm ${activeTab === 'profile'
-                ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ? 'border-primary-500 text-primary-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
           >
             <UserIcon className="w-5 h-5" />
@@ -129,17 +204,151 @@ const CustomerDashboard = () => {
         </nav>
       </div>
 
-      {/* QR Code Tab */}
-      {activeTab === 'qr' && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8">
-          <div className="text-center">
-            <h2 className="text-xl font-semibold mb-4">Your QR Code</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Show this QR code to the cashier for faster checkout
-            </p>
-            <div className="flex justify-center mb-6">
-              <div className="p-4 bg-white rounded-lg">
-                <QRCodeSVG
+      {/* Shopping Tab */}
+      {
+        activeTab === 'shopping' && (
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold mb-4 text-primary-600">Browse Products</h2>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  placeholder="Search products to add..."
+                  className="input-primary"
+                  value={searchQuery}
+                  onChange={(e) => handleProductSearch(e.target.value)}
+                />
+                {isSearching && (
+                  <div className="absolute right-3 top-3">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary-500"></div>
+                  </div>
+                )}
+              </div>
+
+              {loading ? (
+                <div className="py-12 text-center">
+                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-500 mx-auto"></div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {(searchQuery ? searchResults : products).map(p => (
+                    <div key={p.id} className="border dark:border-gray-700 rounded-lg p-4 flex justify-between items-center hover:shadow-md transition-shadow">
+                      <div>
+                        <p className="font-bold">{p.name}</p>
+                        <p className="text-primary-600 font-semibold">${p.price.toFixed(2)}</p>
+                        <p className="text-xs text-gray-400 capitalize">{p.categoryName || 'General'}</p>
+                      </div>
+                      <button
+                        onClick={() => handleAddToCart(p)}
+                        className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-1"
+                      >
+                        <ShoppingBagIcon className="w-4 h-4" />
+                        Add
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+              <div className="p-4 border-b dark:border-gray-700 flex justify-between items-center">
+                <h3 className="font-semibold">Your Shopping Bag</h3>
+                <span className="text-sm font-medium text-gray-500">
+                  {cart.items.length} items
+                </span>
+              </div>
+
+              {cart.items.length === 0 ? (
+                <div className="p-8 text-center text-gray-500">
+                  Bag is empty. Pick some items to start shopping!
+                </div>
+              ) : (
+                <div className="divide-y dark:divide-gray-700">
+                  {cart.items.map(item => (
+                    <div key={item.productId} className="p-4 flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">{item.name}</p>
+                        <p className="text-sm text-gray-500">
+                          ${item.price.toFixed(2)} x {item.quantity}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center border rounded dark:border-gray-600">
+                          <button
+                            onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                            className="px-3 py-1 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          >-</button>
+                          <span className="px-2 text-sm font-bold">{item.quantity}</span>
+                          <button
+                            onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                            className="px-3 py-1 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          >+</button>
+                        </div>
+                        <button
+                          onClick={() => removeItem(item.productId)}
+                          className="text-red-500 text-sm hover:underline"
+                        >Remove</button>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="p-6 bg-gray-50 dark:bg-gray-900/50 flex flex-col gap-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
+                      <span className="font-semibold">${cart.subtotal.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between items-center border-t dark:border-gray-700 pt-4">
+                      <div className="font-bold text-xl">Total: ${cart.total.toFixed(2)}</div>
+                      <button
+                        onClick={() => setActiveTab('billing')}
+                        className="btn-primary flex items-center gap-2"
+                      >
+                        Process to Billing <CreditCardIcon className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      }
+
+      {/* Billing Tab */}
+      {
+        activeTab === 'billing' && (
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 text-center">
+              <h2 className="text-2xl font-bold mb-2">Billing Summary</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-8">
+                Review your items and show the code to the cashier
+              </p>
+
+              <div className="max-w-md mx-auto border dark:border-gray-700 rounded-xl overflow-hidden mb-8">
+                <div className="bg-gray-50 dark:bg-gray-900/50 p-4 border-b dark:border-gray-700">
+                  <h3 className="font-bold uppercase tracking-wider text-sm">Cart Items</h3>
+                </div>
+                <div className="p-4 space-y-3">
+                  {cart.items.length > 0 ? (
+                    cart.items.map(item => (
+                      <div key={item.productId} className="flex justify-between text-sm">
+                        <span>{item.name} x {item.quantity}</span>
+                        <span className="font-medium">${(item.price * item.quantity).toFixed(2)}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 italic">No items in cart</p>
+                  )}
+                  <div className="border-t dark:border-gray-700 pt-3 mt-3 flex justify-between font-bold text-lg">
+                    <span>Total Amount</span>
+                    <span className="text-primary-600">${cart.total.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-2xl shadow-inner inline-block border-4 border-primary-500/20 mb-6">
+                <QRCodeCanvas
+                  id="billing-qr-canvas"
                   value={JSON.stringify({
                     type: 'LOYALTY_CART',
                     customerId: user?.id,
@@ -149,213 +358,174 @@ const CustomerDashboard = () => {
                       productId: i.productId,
                       quantity: i.quantity,
                       weight: i.weight
-                    }))
+                    })),
+                    total: cart.total
                   })}
-                  size={200}
-                  level="H"
+                  size={256}
+                  level="M"
                   includeMargin={true}
                 />
               </div>
-            </div>
-            <button
-              onClick={() => {
-                // Download QR code
-                const canvas = document.querySelector('canvas');
-                const url = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = 'qr-code.png';
-                link.href = url;
-                link.click();
-              }}
-              className="btn-primary"
-            >
-              Download QR Code
-            </button>
-            {cart.items.length > 0 && (
-              <div className="mt-6 p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg text-primary-700 dark:text-primary-300 text-sm">
-                Your cart data is included in this QR code.
-                Scan it at the cashier for checkout.
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
-      {/* Shopping Tab */}
-      {activeTab === 'shopping' && (
-        <div className="space-y-6">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4 text-primary-600">Start Shopping</h2>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search products to add..."
-                className="input-primary"
-                value={searchQuery}
-                onChange={(e) => handleProductSearch(e.target.value)}
-              />
-              {isSearching && (
-                <div className="absolute right-3 top-3">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary-500"></div>
+              <div className="flex flex-col items-center gap-4">
+                <p className="text-sm font-medium text-gray-500 animate-pulse">
+                  Scan at any cashier counter to complete payment
+                </p>
+                <button
+                  onClick={() => {
+                    const canvas = document.getElementById('billing-qr-canvas');
+                    if (canvas) {
+                      const url = canvas.toDataURL('image/png');
+                      const link = document.createElement('a');
+                      link.download = `billing-qr-${user?.name || 'customer'}.png`;
+                      link.href = url;
+                      link.click();
+                    } else {
+                      // Assuming 'toast' is available globally or imported
+                      // If not, you might want to use a simple alert or state for error message
+                      toast.error('Could not generate download image');
+                    }
+                  }}
+                  className="btn-primary"
+                >
+                  Save QR Code
+                </button>
+                <button
+                  onClick={() => setActiveTab('shopping')}
+                  className="text-primary-600 hover:underline font-medium"
+                >
+                  &larr; Back to Shopping
+                </button>
+              </div>
+
+              {/* Payment Request Overlay */}
+              {paymentRequest && (
+                <div className="mt-8 p-6 bg-primary-50 dark:bg-primary-900/20 border-2 border-primary-500 rounded-2xl animate-in fade-in zoom-in duration-300">
+                  <div className="flex items-center justify-center gap-3 mb-4 text-primary-600">
+                    <CreditCardIcon className="w-8 h-8" />
+                    <h3 className="text-xl font-bold">Incoming Payment Request</h3>
+                  </div>
+                  <p className="mb-6 text-gray-600 dark:text-gray-400">
+                    The cashier has sent a request for <b>{paymentRequest.method.toUpperCase()}</b> payment.
+                  </p>
+
+                  <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm mb-6 flex justify-between items-center text-2xl font-black">
+                    <span>Total Due:</span>
+                    <span className="text-primary-600 text-3xl">${paymentRequest.amount.toFixed(2)}</span>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem('active_payment_request');
+                        setPaymentRequest(null);
+                        toast.error('Payment declined');
+                      }}
+                      className="flex-1 py-3 px-4 rounded-xl font-semibold text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      Decline
+                    </button>
+                    <button
+                      onClick={handleConfirmPayment}
+                      className="flex-[2] py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold shadow-lg shadow-primary-500/30 transition-all scale-105 active:scale-95"
+                    >
+                      Pay Now (${paymentRequest.amount.toFixed(2)})
+                    </button>
+                  </div>
+                  <p className="mt-4 text-xs text-gray-400">
+                    Transaction ID: {paymentRequest.id}
+                  </p>
                 </div>
               )}
             </div>
-
-            {searchResults.length > 0 && (
-              <div className="mt-2 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden divide-y">
-                {searchResults.map(p => (
-                  <button
-                    key={p.id}
-                    onClick={() => handleAddToCart(p)}
-                    className="w-full text-left p-3 hover:bg-gray-50 dark:hover:bg-gray-700 flex justify-between items-center"
-                  >
-                    <div>
-                      <p className="font-medium">{p.name}</p>
-                      <p className="text-xs text-gray-500">${p.price.toFixed(2)}</p>
-                    </div>
-                    <span className="text-primary-500 text-sm font-semibold">+ Add</span>
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-            <div className="p-4 border-b dark:border-gray-700 flex justify-between items-center">
-              <h3 className="font-semibold">Your Shopping Bag</h3>
-              <span className="text-sm font-medium text-gray-500">
-                {cart.items.length} items
-              </span>
-            </div>
-
-            {cart.items.length === 0 ? (
-              <div className="p-8 text-center text-gray-500">
-                Bag is empty. Start scanning/adding products.
-              </div>
-            ) : (
-              <div className="divide-y dark:divide-gray-700">
-                {cart.items.map(item => (
-                  <div key={item.productId} className="p-4 flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">{item.name}</p>
-                      <p className="text-sm text-gray-500">
-                        ${item.price.toFixed(2)} x {item.quantity}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center border rounded dark:border-gray-600">
-                        <button
-                          onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                          className="px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700"
-                        >-</button>
-                        <span className="px-2 text-sm">{item.quantity}</span>
-                        <button
-                          onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                          className="px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700"
-                        >+</button>
-                      </div>
-                      <button
-                        onClick={() => removeItem(item.productId)}
-                        className="text-red-500 text-sm"
-                      >Remove</button>
-                    </div>
-                  </div>
-                ))}
-                <div className="p-4 bg-gray-50 dark:bg-gray-900/50 flex justify-between items-center">
-                  <div className="font-bold text-lg">Total: ${cart.total.toFixed(2)}</div>
-                  <button
-                    onClick={() => setActiveTab('qr')}
-                    className="btn-primary"
-                  >
-                    Get Checkout QR
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+        )
+      }
 
       {/* Purchase History Tab */}
-      {activeTab === 'history' && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-semibold">Purchase History</h2>
-          </div>
+      {
+        activeTab === 'history' && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl font-semibold">Purchase History</h2>
+            </div>
 
-          {loading ? (
-            <div className="p-8 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"></div>
-            </div>
-          ) : transactions.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
-              No transactions found
-            </div>
-          ) : (
-            <div className="divide-y divide-gray-200 dark:divide-gray-700">
-              {transactions.map((transaction) => (
-                <div key={transaction.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="font-medium">{transaction.id}</p>
-                      <p className="text-sm text-gray-500">
-                        {format(transaction.date, 'PPP')}
-                      </p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {transaction.items} items
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-lg font-bold">${transaction.total.toFixed(2)}</p>
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                        {transaction.status}
-                      </span>
+            {loading ? (
+              <div className="p-8 text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"></div>
+              </div>
+            ) : transactions.length === 0 ? (
+              <div className="p-8 text-center text-gray-500">
+                No transactions found
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                {transactions.map((transaction) => (
+                  <div key={transaction.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-medium">{transaction.id}</p>
+                        <p className="text-sm text-gray-500">
+                          {format(transaction.date, 'PPP')}
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {transaction.items} items
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-lg font-bold">${transaction.total.toFixed(2)}</p>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                          {transaction.status}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      }
 
       {/* Profile Tab */}
-      {activeTab === 'profile' && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-6">Profile Settings</h2>
+      {
+        activeTab === 'profile' && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-6">Profile Settings</h2>
 
-          <form className="space-y-4 max-w-md">
-            <div>
-              <label className="block text-sm font-medium mb-2">Name</label>
-              <input
-                type="text"
-                defaultValue={user?.name}
-                className="input-primary"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Email</label>
-              <input
-                type="email"
-                defaultValue={user?.email}
-                className="input-primary"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Phone</label>
-              <input
-                type="tel"
-                defaultValue={user?.phone}
-                className="input-primary"
-              />
-            </div>
-            <button type="submit" className="btn-primary">
-              Update Profile
-            </button>
-          </form>
-        </div>
-      )}
-    </div>
+            <form className="space-y-4 max-w-md">
+              <div>
+                <label className="block text-sm font-medium mb-2">Name</label>
+                <input
+                  type="text"
+                  defaultValue={user?.name}
+                  className="input-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Email</label>
+                <input
+                  type="email"
+                  defaultValue={user?.email}
+                  className="input-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Phone</label>
+                <input
+                  type="tel"
+                  defaultValue={user?.phone}
+                  className="input-primary"
+                />
+              </div>
+              <button type="submit" className="btn-primary">
+                Update Profile
+              </button>
+            </form>
+          </div>
+        )
+      }
+    </div >
   );
 };
 

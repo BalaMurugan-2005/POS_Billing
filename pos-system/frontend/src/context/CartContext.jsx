@@ -18,6 +18,12 @@ export const CartProvider = ({ children }) => {
   });
 
   useEffect(() => {
+    if (cart.items.length > 0 || cart.customer || cart.total > 0 || cart.discount > 0 || cart.paymentMethod) {
+      offlineService.saveCart(cart);
+    }
+  }, [cart]);
+
+  useEffect(() => {
     loadSavedCart();
   }, []);
 
@@ -64,14 +70,9 @@ export const CartProvider = ({ children }) => {
       }
 
       const { subtotal, tax, total } = calculateTotals(newItems, prev.discount);
-      const newCart = { ...prev, items: newItems, subtotal, tax, total };
-
-      // Save to offline storage
-      offlineService.saveCart(newCart);
-
-      toast.success(`${product.name} added to cart`);
-      return newCart;
+      return { ...prev, items: newItems, subtotal, tax, total };
     });
+    toast.success(`${product.name} added to cart`);
   };
 
   const updateQuantity = (productId, quantity) => {
@@ -86,10 +87,7 @@ export const CartProvider = ({ children }) => {
       );
 
       const { subtotal, tax, total } = calculateTotals(newItems, prev.discount);
-      const newCart = { ...prev, items: newItems, subtotal, tax, total };
-
-      offlineService.saveCart(newCart);
-      return newCart;
+      return { ...prev, items: newItems, subtotal, tax, total };
     });
   };
 
@@ -97,55 +95,70 @@ export const CartProvider = ({ children }) => {
     setCart(prev => {
       const newItems = prev.items.filter(item => item.productId !== productId);
       const { subtotal, tax, total } = calculateTotals(newItems, prev.discount);
-      const newCart = { ...prev, items: newItems, subtotal, tax, total };
-
-      offlineService.saveCart(newCart);
-      toast.success('Item removed from cart');
-      return newCart;
+      return { ...prev, items: newItems, subtotal, tax, total };
     });
+    toast.success('Item removed from cart');
   };
 
   const applyDiscount = (discount) => {
     setCart(prev => {
       const { subtotal, tax, total } = calculateTotals(prev.items, discount);
-      const newCart = { ...prev, discount, total };
-
-      offlineService.saveCart(newCart);
-      return newCart;
+      return { ...prev, discount, total };
     });
   };
 
   const setCustomer = (customer) => {
-    setCart(prev => {
-      const newCart = { ...prev, customer };
-      offlineService.saveCart(newCart);
-      return newCart;
-    });
+    setCart(prev => ({ ...prev, customer }));
     if (customer) {
       toast.success(`Customer verified: ${customer.name || customer.username || customer.email}`);
     }
   };
 
   const removeCustomer = () => {
-    setCart(prev => {
-      const newCart = { ...prev, customer: null };
-      offlineService.saveCart(newCart);
-      return newCart;
-    });
+    setCart(prev => ({ ...prev, customer: null }));
     toast.info('Customer removed');
   };
 
   const processPayment = (paymentMethod, paidAmount) => {
-    const change = paidAmount - cart.total;
     setCart(prev => {
-      const newCart = { ...prev, paymentMethod, paidAmount, change };
-      offlineService.saveCart(newCart);
-      return newCart;
+      const change = paidAmount - prev.total;
+      return { ...prev, paymentMethod, paidAmount, change };
     });
   };
 
+  const importVerifiedCart = (customer, items) => {
+    const newItems = items.map(item => {
+      const price = item.weight ? item.product.pricePerKg * item.weight : item.product.price;
+      return {
+        productId: item.product.id,
+        name: item.product.name,
+        price,
+        quantity: item.quantity,
+        weight: item.weight,
+        taxRate: item.product.taxRate,
+        barcode: item.product.barcode
+      };
+    });
+
+    const { subtotal, tax, total } = calculateTotals(newItems, 0);
+
+    setCart({
+      items: newItems,
+      subtotal,
+      tax,
+      discount: 0,
+      total,
+      customer,
+      paymentMethod: null,
+      paidAmount: 0,
+      change: 0
+    });
+
+    toast.success(`Imported verified cart for ${customer.name || customer.email}`);
+  };
+
   const clearCart = () => {
-    const emptyCart = {
+    setCart({
       items: [],
       subtotal: 0,
       tax: 0,
@@ -155,8 +168,7 @@ export const CartProvider = ({ children }) => {
       paymentMethod: null,
       paidAmount: 0,
       change: 0
-    };
-    setCart(emptyCart);
+    });
     offlineService.clearCart();
   };
 
@@ -168,6 +180,7 @@ export const CartProvider = ({ children }) => {
     applyDiscount,
     setCustomer,
     removeCustomer,
+    importVerifiedCart,
     processPayment,
     clearCart
   };

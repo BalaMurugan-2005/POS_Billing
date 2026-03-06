@@ -7,7 +7,7 @@ import { MagnifyingGlassIcon, CameraIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 import VisualScanner from './VisualScanner';
 
-const BarcodeScanner = () => {
+const BarcodeScanner = ({ onCheckout }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isScanning, setIsScanning] = useState(false);
   const [manualMode, setManualMode] = useState(false);
@@ -15,8 +15,10 @@ const BarcodeScanner = () => {
   const [showResults, setShowResults] = useState(false);
   const [isCustomerSearch, setIsCustomerSearch] = useState(false);
   const [showVisualScanner, setShowVisualScanner] = useState(false);
+  const [verificationData, setVerificationData] = useState(null);
+  const [isVerifying, setIsVerifying] = useState(false);
   const inputRef = useRef(null);
-  const { addItem, cart, setCustomer, removeCustomer, clearCart } = useCart();
+  const { addItem, cart, setCustomer, removeCustomer, clearCart, importVerifiedCart } = useCart();
 
   const handleScan = async (barcode, isManual = false) => {
     setIsScanning(true);
@@ -26,22 +28,32 @@ const BarcodeScanner = () => {
         try {
           const data = JSON.parse(barcode);
           if (data.type === 'LOYALTY_CART') {
-            const customer = await customerService.getCustomerByLoyalty(data.loyaltyNumber);
-            setCustomer(customer);
+            setIsVerifying(true);
+            toast.loading('Loading customer profile for verification...', { id: 'verify' });
+            try {
+              const customer = await customerService.getCustomerByLoyalty(data.loyaltyNumber);
 
-            // Import items
-            if (data.items && data.items.length > 0) {
-              clearCart(); // Clear current session before importing customer's bag
-              toast.loading('Importing customer items...', { id: 'import' });
-              for (const item of data.items) {
-                try {
-                  const product = await productService.getProductById(item.productId);
-                  addItem(product, item.quantity, item.weight);
-                } catch (e) {
-                  console.error('Failed to import product:', item.productId);
-                }
-              }
-              toast.success('Shopping bag imported!', { id: 'import' });
+              // Load product details for all items to verify
+              const itemDetails = await Promise.all(
+                (data.items || []).map(async (item) => {
+                  try {
+                    const product = await productService.getProductById(item.productId);
+                    return { ...item, product };
+                  } catch (e) {
+                    return { ...item, product: { name: 'Unknown Product', price: 0 } };
+                  }
+                })
+              );
+
+              setVerificationData({
+                customer,
+                items: itemDetails,
+                total: data.total
+              });
+              toast.success('Customer profile loaded', { id: 'verify' });
+            } catch (error) {
+              toast.error('Failed to verify customer profile', { id: 'verify' });
+              setIsVerifying(false);
             }
             setSearchTerm('');
             return;
@@ -137,6 +149,21 @@ const BarcodeScanner = () => {
     setShowVisualScanner(false);
   };
 
+  const handleVerifyProceed = () => {
+    if (!verificationData) return;
+
+    importVerifiedCart(verificationData.customer, verificationData.items);
+
+    toast.success('Customer and items verified successfully!');
+    setVerificationData(null);
+    setIsVerifying(false);
+
+    // Automatically trigger checkout for the customer
+    if (onCheckout) {
+      setTimeout(() => onCheckout(), 500);
+    }
+  };
+
   useBarcodeScanner(handleScan);
 
   return (
@@ -230,6 +257,76 @@ const BarcodeScanner = () => {
         onClose={() => setShowVisualScanner(false)}
         onScan={handleVisualScan}
       />
+
+      {/* Verification Modal */}
+      {verificationData && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[100]">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="bg-primary-600 p-6 text-white">
+              <h3 className="text-xl font-bold">Verify Customer & Cart</h3>
+              <p className="opacity-90 text-sm mt-1">Please confirm the customer profile and scanned items</p>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {/* Customer Profile */}
+              <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900/50 rounded-full flex items-center justify-center text-primary-600 dark:text-primary-400">
+                  <span className="text-xl font-bold">{(verificationData.customer.name || 'C')[0]}</span>
+                </div>
+                <div>
+                  <p className="font-bold text-lg">{verificationData.customer.name || 'Guest Customer'}</p>
+                  <p className="text-sm text-gray-500">{verificationData.customer.email || 'No email provided'}</p>
+                  <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-full font-medium mt-1 inline-block">
+                    {verificationData.customer.loyaltyNumber || 'Member'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Items List */}
+              <div>
+                <h4 className="font-semibold text-sm uppercase tracking-wider text-gray-500 mb-3 px-1">Items to Verify</h4>
+                <div className="max-h-60 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+                  {verificationData.items.map((item, idx) => (
+                    <div key={idx} className="flex justify-between items-center p-3 border dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 shadow-sm">
+                      <div>
+                        <p className="font-medium">{item.product.name}</p>
+                        <p className="text-xs text-gray-400">${item.product.price.toFixed(2)}</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-bold">x{item.quantity}</span>
+                        {item.weight && <span className="text-xs text-gray-400 block">{item.weight}kg</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Totals */}
+              <div className="pt-4 border-t dark:border-gray-700">
+                <div className="flex justify-between items-center text-xl font-bold">
+                  <span>Cart Total:</span>
+                  <span className="text-primary-600">${verificationData.total.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 bg-gray-50 dark:bg-gray-900/30 flex gap-3 border-t dark:border-gray-700">
+              <button
+                onClick={() => setVerificationData(null)}
+                className="flex-1 py-3 px-4 rounded-xl font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleVerifyProceed}
+                className="flex-[2] py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold shadow-lg shadow-primary-500/20 transition-all flex items-center justify-center gap-2"
+              >
+                Verify & Proceed to Payment
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
