@@ -1,0 +1,138 @@
+C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (7.0.1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (7.0.1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO 2026-03-06 19:11:11,261 Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified some issues:
+
+WARNINGS:
+?: (staticfiles.W004) The directory 'C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\static' in the STATICFILES_DIRS setting does not exist.
+
+System check identified 1 issue (0 silenced).
+March 06, 2026 - 19:11:14
+Django version 4.2.7, using settings 'pos_system.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CTRL-BREAK.
+
+ERROR 2026-03-06 19:18:34,086 Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\debug_toolbar\middleware.py", line 74, in __call__
+    rendered = toolbar.render_toolbar()
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\debug_toolbar\toolbar.py", line 82, in render_toolbar
+    return render_to_string("debug_toolbar/base.html", context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: debug_toolbar/base.html
+ERROR 2026-03-06 19:18:34,101 "GET / HTTP/1.1" 500 94007
+ERROR 2026-03-06 19:18:34,413 Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\debug_toolbar\middleware.py", line 74, in __call__
+    rendered = toolbar.render_toolbar()
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\debug_toolbar\toolbar.py", line 82, in render_toolbar
+    return render_to_string("debug_toolbar/base.html", context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: debug_toolbar/base.html
+ERROR 2026-03-06 19:18:34,415 "GET /favicon.ico HTTP/1.1" 500 93910
+INFO 2026-03-06 19:24:13,948 C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\api\views.py changed, reloading.
+C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (7.0.1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO 2026-03-06 19:24:17,218 Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+March 06, 2026 - 19:24:20
+Django version 4.2.7, using settings 'pos_system.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CTRL-BREAK.
+
+INFO 2026-03-06 19:24:27,851 C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\api\models.py changed, reloading.
+C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (7.0.1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO 2026-03-06 19:24:32,447 Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+March 06, 2026 - 19:24:36
+Django version 4.2.7, using settings 'pos_system.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CTRL-BREAK.
+
+INFO 2026-03-06 20:09:32,236 C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\pos_system\settings.py changed, reloading.
+C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (7.0.1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO 2026-03-06 20:09:43,935 Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+March 06, 2026 - 20:10:01
+Django version 4.2.7, using settings 'pos_system.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CTRL-BREAK.
+
+INFO 2026-03-06 20:13:29,626 C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\reporting\views.py changed, reloading.
+C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (7.0.1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO 2026-03-06 20:13:34,085 Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+March 06, 2026 - 20:13:38
+Django version 4.2.7, using settings 'pos_system.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CTRL-BREAK.
+
+INFO 2026-03-06 20:15:15,516 C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\pos_system\settings.py changed, reloading.
+C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (7.0.1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO 2026-03-06 20:15:18,763 Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+March 06, 2026 - 20:15:22
+Django version 4.2.7, using settings 'pos_system.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CTRL-BREAK.
+
+INFO 2026-03-06 20:17:36,132 C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\analytics\views.py changed, reloading.
+C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (7.0.1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO 2026-03-06 20:17:40,623 Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+March 06, 2026 - 20:17:44
+Django version 4.2.7, using settings 'pos_system.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CTRL-BREAK.
+
+INFO 2026-03-06 20:17:58,586 C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\pos_system\urls.py changed, reloading.
+C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (7.0.1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO 2026-03-06 20:18:02,593 Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+March 06, 2026 - 20:18:07
+Django version 4.2.7, using settings 'pos_system.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CTRL-BREAK.
+

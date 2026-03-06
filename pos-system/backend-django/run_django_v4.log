@@ -1,0 +1,13 @@
+C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (7.0.1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\venv\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (7.0.1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO 2026-03-06 21:57:09,184 Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+March 06, 2026 - 21:57:34
+Django version 4.2.7, using settings 'pos_system.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CTRL-BREAK.
+
