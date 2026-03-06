@@ -22,10 +22,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       const response = await login(credentials);
-      
+
       // Redirect based on role
       switch (response.user.role) {
         case 'admin':
@@ -111,12 +111,12 @@ const Login = () => {
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Demo Credentials:
+            Demo Credentials (Password: Bala9677540588#):
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
-            Admin: admin / admin123<br />
-            Cashier: cashier / cashier123<br />
-            Customer: customer / customer123
+            Admin username: admin<br />
+            Cashier username: cashier<br />
+            Customer username: customer
           </p>
         </div>
       </motion.div>
