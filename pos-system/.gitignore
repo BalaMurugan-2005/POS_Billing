@@ -1,0 +1,38 @@
+# ─── Python / Django ───────────────────────────────────────────────────────
+backend-django/venv/
+backend-django/__pycache__/
+backend-django/**/__pycache__/
+backend-django/**/*.pyc
+backend-django/.env
+backend-django/staticfiles/
+backend-django/media/
+backend-django/logs/
+backend-django/*.log
+backend-django/db.sqlite3
+
+# ─── Java / Spring Boot ────────────────────────────────────────────────────
+backend-springboot/target/
+backend-springboot/logs/
+backend-springboot/*.log
+backend-springboot/.env
+
+# ─── Node / React ─────────────────────────────────────────────────────────
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.production.local
+
+# ─── IDEs & OS ────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# ─── Credentials (never commit these!) ───────────────────────────────────
+*.pem
+*.key
+*.pfx
+.env.production

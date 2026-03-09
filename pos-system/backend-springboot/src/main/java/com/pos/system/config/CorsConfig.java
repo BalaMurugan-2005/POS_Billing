@@ -1,43 +1,65 @@
 package com.pos.system.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
     @Value("${cors.allowed-origins}")
-    private String[] allowedOrigins;
+    private String allowedOriginsRaw;
 
     @Value("${cors.allowed-methods}")
     private String[] allowedMethods;
 
-    @Value("${cors.allowed-headers}")
-    private String[] allowedHeaders;
-
     @Value("${cors.allow-credentials}")
     private boolean allowCredentials;
 
-    @org.springframework.context.annotation.Bean
-    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
-        org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
-        
-        for (String origin : allowedOrigins) {
-            config.addAllowedOrigin(origin);
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        // Parse comma-separated origins from properties
+        List<String> originList = Arrays.asList(allowedOriginsRaw.split(","));
+        for (String origin : originList) {
+            String trimmed = origin.trim();
+            if (!trimmed.isEmpty()) {
+                config.addAllowedOrigin(trimmed);
+            }
         }
-        
+
+        // Allow any *.onrender.com subdomain for production deploys
+        config.addAllowedOriginPattern("https://*.onrender.com");
+
         for (String method : allowedMethods) {
-            config.addAllowedMethod(method);
+            config.addAllowedMethod(method.trim());
         }
-        
+
         config.addAllowedHeader("*");
         config.setAllowCredentials(allowCredentials);
         config.setMaxAge(3600L);
-        
-        org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(3600);
     }
 }

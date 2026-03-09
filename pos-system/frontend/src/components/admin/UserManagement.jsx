@@ -12,7 +12,7 @@ const EMPTY_FORM = {
   password: '',
   role: 'CASHIER',
   phone: '',
-  isActive: true,
+  active: true,
 };
 
 const UserManagement = () => {
@@ -84,8 +84,9 @@ const UserManagement = () => {
 
   const handleToggleStatus = async (user) => {
     try {
-      await userService.updateUser(user.id, { ...user, isActive: !user.isActive });
-      toast.success(`User ${!user.isActive ? 'activated' : 'deactivated'}`);
+      const currentStatus = user.active !== undefined ? user.active : user.isActive;
+      await userService.toggleUserStatus(user.id, !currentStatus);
+      toast.success(`User ${!currentStatus ? 'activated' : 'deactivated'}`);
       fetchUsers();
     } catch {
       toast.error('Failed to update status');
@@ -153,12 +154,12 @@ const UserManagement = () => {
                   <td className="px-6 py-4">
                     <button
                       onClick={() => handleToggleStatus(user)}
-                      className={`px-2 py-1 text-xs rounded-full font-medium ${user.isActive
+                      className={`px-2 py-1 text-xs rounded-full font-medium ${(user.active !== undefined ? user.active : user.isActive)
                           ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200'
                           : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'
                         }`}
                     >
-                      {user.isActive ? 'Active' : 'Inactive'}
+                      {(user.active !== undefined ? user.active : user.isActive) ? 'Active' : 'Inactive'}
                     </button>
                   </td>
                   <td className="px-6 py-4 text-xs text-gray-500">

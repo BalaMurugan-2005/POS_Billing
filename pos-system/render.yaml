@@ -1,0 +1,91 @@
+##############################################################################
+# render.yaml — Infrastructure-as-Code for Render.com
+# Deploy order: 1) PostgreSQL  2) Django  3) Spring Boot  4) React
+##############################################################################
+
+services:
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # 1. Django Backend (Web Service)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: pos-django
+    runtime: python
+    rootDir: backend-django
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput
+    startCommand: gunicorn pos_system.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    plan: free
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: pos-django.onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pos-postgres
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        sync: false   # Set manually in Render dashboard
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://pos-frontend.onrender.com
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # 2. Spring Boot Backend (Web Service)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: pos-springboot
+    runtime: java
+    rootDir: backend-springboot
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -jar target/pos-system-1.0.0.jar
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pos-postgres
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        sync: false   # Must match Django's JWT_SECRET_KEY
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://pos-frontend.onrender.com
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: JAVA_VERSION
+        value: "17"
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # 3. React Frontend (Static Site)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: pos-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    plan: free
+    envVars:
+      - key: VITE_API_URL
+        value: https://pos-springboot.onrender.com/api
+      - key: VITE_DJANGO_URL
+        value: https://pos-django.onrender.com
+    routes:
+      # SPA fallback — serve index.html for all client-side routes
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+##############################################################################
+# PostgreSQL Managed Database
+##############################################################################
+
+databases:
+  - name: pos-postgres
+    plan: free
+    databaseName: pos_system
+    user: pos_user

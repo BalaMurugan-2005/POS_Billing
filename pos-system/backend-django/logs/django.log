@@ -6318,3 +6318,5 @@ WARNING 2026-03-09 17:15:55,909 log 5912 22088 Unauthorized: /api/reporting/dail
 WARNING 2026-03-09 17:15:55,913 basehttp 5912 22088 "GET /api/reporting/daily_sales/?date=2026-03-09 HTTP/1.1" 401 171
 WARNING 2026-03-09 17:15:55,919 log 5912 22088 Unauthorized: /api/reporting/daily_sales/
 WARNING 2026-03-09 17:15:55,920 basehttp 5912 22088 "GET /api/reporting/daily_sales/?date=2026-03-09 HTTP/1.1" 401 171
+INFO 2026-03-09 20:19:42,812 autoreload 11400 23184 Watching for file changes with StatReloader
+INFO 2026-03-09 20:45:50,846 autoreload 11400 23184 C:\Users\Balamurugan P\OneDrive\Desktop\Pos_billing\pos-system\backend-django\pos_system\settings.py changed, reloading.

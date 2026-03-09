@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+// In production: VITE_API_URL=https://your-springboot.onrender.com/api
+// In development: falls back to '/api' which is proxied by vite.config.js to localhost:8081
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 const api = axios.create({
@@ -9,7 +11,7 @@ const api = axios.create({
   },
 });
 
-// Request interceptor to add token
+// Request interceptor to add JWT token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -29,15 +31,12 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       const requestUrl = error.config?.url || '';
-      // Only redirect to login if the failure is on the auth check itself
-      // (i.e. the user's own token is invalid/expired), not on any API call
+      // Only redirect to login if the user's own token is invalid/expired
       const isAuthCheck = requestUrl.includes('/auth/me') || requestUrl.includes('/auth/refresh');
       if (isAuthCheck) {
         localStorage.removeItem('token');
         window.location.href = '/login';
       }
-      // For other endpoints (e.g. customer lookup by cashier), just reject
-      // so the caller can handle the error gracefully.
     }
     return Promise.reject(error);
   }
