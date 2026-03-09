@@ -7,6 +7,7 @@ import { DocumentTextIcon, QrCodeIcon, UserIcon, ShoppingBagIcon, CreditCardIcon
 import { productService } from '../../services/productService';
 import { useCart } from '../../hooks/useCart';
 import { paymentRequestService } from '../../services/paymentRequestService';
+import Receipt from '../pos/Receipt';
 import toast from 'react-hot-toast';
 
 const CustomerDashboard = () => {
@@ -19,6 +20,7 @@ const CustomerDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [paymentRequest, setPaymentRequest] = useState(null); // { id, amount, method, items }
 
   useEffect(() => {
@@ -96,13 +98,20 @@ const CustomerDashboard = () => {
       const response = await transactionService.getTransactionsByCustomer(user.id);
 
       const mapped = response.map(t => ({
-        id: t.transactionNumber,
+        id: t.transactionNumber || t.id,
         date: t.createdAt,
-        total: parseFloat(t.total || 0),
-        items: t.items?.length || 0,
-        paymentMethod: t.paymentMethod,
+        total: parseFloat(t.total || t.totalAmount || 0),
+        itemCount: t.items?.length || 0,
+        paymentMethod: t.paymentMethod || 'cash',
         status: (t.status || 'completed').toLowerCase(),
-        itemDetails: t.items || [],
+        items: t.items || [],
+        subtotal: parseFloat(t.subtotal || t.total || 0),
+        tax: parseFloat(t.tax || 0),
+        discount: parseFloat(t.discount || 0),
+        customer: t.customer || { name: user.name, email: user.email },
+        cashier: t.cashier || { name: 'System' },
+        paidAmount: parseFloat(t.paidAmount || t.totalAmount || t.total || 0),
+        change: parseFloat(t.change || 0)
       }));
       setTransactions(mapped);
     } catch (error) {
@@ -516,46 +525,48 @@ const CustomerDashboard = () => {
               </div>
             ) : (
               <div className="divide-y divide-gray-200 dark:divide-gray-700">
-                {transactions.map((transaction) => (
-                  <div key={transaction.id} className="p-6">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <p className="font-bold font-mono text-primary-600">{transaction.id}</p>
-                        <p className="text-sm text-gray-500 mt-1">
-                          {transaction.date
-                            ? new Date(transaction.date).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
-                            : '—'}
-                        </p>
-                        <p className="text-xs text-gray-400 mt-0.5 capitalize">
-                          {transaction.paymentMethod || 'Cash'} • {transaction.items} item(s)
-                        </p>
-                      </div>
+                {transactions.map((tx) => (
+                  <div key={tx.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                    <div>
+                      <p className="font-bold font-mono text-primary-600 flex items-center gap-2">
+                        <DocumentTextIcon className="w-5 h-5 text-gray-400" />
+                        Txn #{tx.id}
+                      </p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {tx.date ? new Date(tx.date).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : '—'}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-1 capitalize">
+                        {tx.paymentMethod || 'Cash'} • {tx.itemCount} item(s)
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-6 justify-between sm:justify-end">
                       <div className="text-right">
                         <p className="text-xl font-bold text-gray-800 dark:text-white">
-                          ₹{parseFloat(transaction.total || 0).toFixed(2)}
+                          ₹{parseFloat(tx.total || 0).toFixed(2)}
                         </p>
-                        <span className={`inline-flex items-center mt-1 px-2.5 py-0.5 rounded-full text-xs font-medium
-                          ${transaction.status === 'completed'
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                            : 'bg-gray-100 text-gray-600'}`}>
-                          {transaction.status}
+                        <span className={`inline-flex items-center mt-1 px-2.5 py-0.5 rounded-full text-xs font-medium uppercase
+                          ${tx.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-gray-100 text-gray-600'}`}>
+                          {tx.status}
                         </span>
                       </div>
+                      <button
+                        onClick={() => setSelectedTransaction(tx)}
+                        className="btn-secondary whitespace-nowrap"
+                      >
+                        View Receipt
+                      </button>
                     </div>
-                    {transaction.itemDetails && transaction.itemDetails.length > 0 && (
-                      <div className="mt-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg p-3 space-y-1">
-                        {transaction.itemDetails.map((item, idx) => (
-                          <div key={idx} className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                            <span>{item.productName} × {item.quantity}</span>
-                            <span className="font-medium">₹{parseFloat(item.subtotal || 0).toFixed(2)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
             )}
+
+            <Receipt
+              isOpen={!!selectedTransaction}
+              onClose={() => setSelectedTransaction(null)}
+              transaction={selectedTransaction}
+            />
           </div>
         )
       }

@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import CashierDashboard from './pages/CashierDashboard';
 import CustomerDashboard from './pages/CustomerDashboard';
+import CustomerRegister from './pages/CustomerRegister';
 import Unauthorized from './pages/Unauthorized';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import DashboardLayout from './components/layout/DashboardLayout';
@@ -17,37 +18,38 @@ function App() {
     <ErrorBoundary>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<CustomerRegister />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-        
+
         <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
-            <Route 
-              path="/admin/*" 
+            <Route
+              path="/admin/*"
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <AdminDashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/cashier/*" 
+            <Route
+              path="/cashier/*"
               element={
                 <ProtectedRoute allowedRoles={['cashier', 'admin']}>
                   <CashierDashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/customer/*" 
+            <Route
+              path="/customer/*"
               element={
                 <ProtectedRoute allowedRoles={['customer', 'cashier', 'admin']}>
                   <CustomerDashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
           </Route>
         </Route>
-        
+
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </ErrorBoundary>

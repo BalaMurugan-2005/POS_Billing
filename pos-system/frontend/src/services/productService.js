@@ -37,12 +37,14 @@ export const productService = {
   },
 
   checkInventory: async (productId) => {
-    const response = await api.get(`/products/${productId}/inventory`);
+    const response = await api.get(`/products/${productId}`);
     return response.data;
   },
 
   updateInventory: async (productId, quantity) => {
-    const response = await api.patch(`/products/${productId}/inventory`, { quantity });
+    const response = await api.patch(`/products/${productId}/stock`, null, {
+      params: { quantity, type: 'SET' }
+    });
     return response.data;
   }
 };

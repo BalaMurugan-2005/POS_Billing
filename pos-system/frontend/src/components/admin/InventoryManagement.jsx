@@ -15,19 +15,22 @@ const InventoryManagement = () => {
 
   const fetchInventory = async () => {
     try {
-      // Mock data - replace with actual API call
-      const mockData = [
-        { id: 1, name: 'Product A', sku: 'SKU001', stock: 150, minStock: 20, maxStock: 200, unit: 'pcs', category: 'Groceries' },
-        { id: 2, name: 'Product B', sku: 'SKU002', stock: 15, minStock: 25, maxStock: 100, unit: 'pcs', category: 'Groceries' },
-        { id: 3, name: 'Product C', sku: 'SKU003', stock: 0, minStock: 10, maxStock: 50, unit: 'kg', category: 'Vegetables' },
-        { id: 4, name: 'Product D', sku: 'SKU004', stock: 45, minStock: 15, maxStock: 80, unit: 'pcs', category: 'Dairy' },
-        { id: 5, name: 'Product E', sku: 'SKU005', stock: 8, minStock: 20, maxStock: 60, unit: 'pcs', category: 'Bakery' },
-      ];
-      
-      setInventory(mockData);
-      
-      // Find low stock items
-      const lowStock = mockData.filter(item => item.stock <= item.minStock);
+      const resp = await productService.getProducts({ page: 0, size: 500 });
+      const products = resp.content || resp || [];
+
+      const realData = products.map(p => ({
+        id: p.id,
+        name: p.name,
+        sku: p.barcode || `SKU${p.id}`,
+        stock: p.stockQuantity || 0,
+        minStock: p.minStockLevel || 10,
+        maxStock: p.maxStockLevel || 100,
+        unit: p.unit || 'pcs',
+        category: p.category || 'General',
+      }));
+      setInventory(realData);
+
+      const lowStock = realData.filter(item => item.stock <= item.minStock);
       setLowStockItems(lowStock);
     } catch (error) {
       toast.error('Failed to fetch inventory');
@@ -121,31 +124,28 @@ const InventoryManagement = () => {
       <div className="flex gap-2">
         <button
           onClick={() => setFilter('all')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium ${
-            filter === 'all'
+          className={`px-4 py-2 rounded-lg text-sm font-medium ${filter === 'all'
               ? 'bg-primary-500 text-white'
               : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
-          }`}
+            }`}
         >
           All Items
         </button>
         <button
           onClick={() => setFilter('low')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium ${
-            filter === 'low'
+          className={`px-4 py-2 rounded-lg text-sm font-medium ${filter === 'low'
               ? 'bg-primary-500 text-white'
               : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
-          }`}
+            }`}
         >
           Low Stock
         </button>
         <button
           onClick={() => setFilter('out')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium ${
-            filter === 'out'
+          className={`px-4 py-2 rounded-lg text-sm font-medium ${filter === 'out'
               ? 'bg-primary-500 text-white'
               : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
-          }`}
+            }`}
         >
           Out of Stock
         </button>
