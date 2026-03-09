@@ -26,10 +26,18 @@ public class DataSourceConfig {
 
     @Bean
     @Primary
-    @ConditionalOnProperty(name = "DATABASE_URL")
     public DataSource dataSource() throws URISyntaxException {
+        if (databaseUrl == null || databaseUrl.trim().isEmpty()) {
+            // Fallback for local development or when env var is not yet available
+            HikariDataSource ds = new HikariDataSource();
+            ds.setJdbcUrl("jdbc:postgresql://localhost:5432/pos_system");
+            ds.setUsername("postgres");
+            ds.setPassword("postgres");
+            ds.setDriverClassName("org.postgresql.Driver");
+            return ds;
+        }
+
         // Parse the Render DATABASE_URL: postgresql://user:pass@host:port/db
-        // or postgres://user:pass@host:port/db
         String cleanUrl = databaseUrl
                 .replace("postgresql://", "")
                 .replace("postgres://", "");
@@ -39,9 +47,15 @@ public class DataSourceConfig {
         String host = uri.getHost();
         int port = uri.getPort() == -1 ? 5432 : uri.getPort();
         String dbName = uri.getPath().replaceFirst("/", "");
-        String[] userInfo = uri.getUserInfo().split(":");
-        String username = userInfo[0];
-        String password = userInfo.length > 1 ? userInfo[1] : "";
+        
+        String username = "postgres";
+        String password = "";
+        
+        if (uri.getUserInfo() != null) {
+            String[] userInfo = uri.getUserInfo().split(":");
+            username = userInfo[0];
+            password = userInfo.length > 1 ? userInfo[1] : "";
+        }
 
         String jdbcUrl = String.format(
                 "jdbc:postgresql://%s:%d/%s?sslmode=require",
