@@ -39,6 +39,8 @@ public class CorsConfig implements WebMvcConfigurer {
 
         // Allow any *.onrender.com subdomain for production deploys
         config.addAllowedOriginPattern("https://*.onrender.com");
+        config.addAllowedOriginPattern("http://localhost:*");
+        config.addAllowedOriginPattern("http://127.0.0.1:*");
 
         for (String method : allowedMethods) {
             config.addAllowedMethod(method.trim());
