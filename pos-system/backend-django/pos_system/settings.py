@@ -22,9 +22,10 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-change-me-in-produc
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 # Dynamically build ALLOWED_HOSTS from env variable
-# e.g. ALLOWED_HOSTS=your-service.onrender.com,localhost,127.0.0.1
-_raw_allowed = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1')
+# We automatically include the pos-billing-bjyl Render domain and localhost.
+_raw_allowed = os.getenv('ALLOWED_HOSTS', 'pos-billing-bjyl.onrender.com,localhost,127.0.0.1')
 ALLOWED_HOSTS = [h.strip() for h in _raw_allowed.split(',') if h.strip()]
+ALLOWED_HOSTS.append('.onrender.com')  # Automatically allow all Render subdomains
 
 # Application definition
 INSTALLED_APPS = [

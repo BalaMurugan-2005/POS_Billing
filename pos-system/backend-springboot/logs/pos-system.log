@@ -8954,3 +8954,11 @@ org.springframework.web.bind.MissingServletRequestParameterException: Required r
 2026-03-09 20:49:33 [http-nio-8081-exec-7] DEBUG c.p.s.s.JwtAuthenticationFilter - Set Authentication for user: admin
 2026-03-09 20:49:33 [http-nio-8081-exec-8] DEBUG c.p.s.s.JwtAuthenticationFilter - JWT Token found in request: /api/transactions
 2026-03-09 20:49:33 [http-nio-8081-exec-8] DEBUG c.p.s.s.JwtAuthenticationFilter - Set Authentication for user: admin
+2026-03-09 20:58:40 [http-nio-8081-exec-3] DEBUG c.p.s.s.JwtAuthenticationFilter - JWT Token found in request: /api/auth/me
+2026-03-09 20:58:41 [http-nio-8081-exec-3] DEBUG c.p.s.s.JwtAuthenticationFilter - Set Authentication for user: admin
+2026-03-09 20:58:41 [http-nio-8081-exec-10] DEBUG c.p.s.s.JwtAuthenticationFilter - JWT Token found in request: /api/auth/me
+2026-03-09 20:58:41 [http-nio-8081-exec-10] DEBUG c.p.s.s.JwtAuthenticationFilter - Set Authentication for user: admin
+2026-03-09 20:58:41 [http-nio-8081-exec-5] DEBUG c.p.s.s.JwtAuthenticationFilter - JWT Token found in request: /api/auth/me
+2026-03-09 20:58:41 [http-nio-8081-exec-5] DEBUG c.p.s.s.JwtAuthenticationFilter - Set Authentication for user: admin
+2026-03-09 20:58:41 [http-nio-8081-exec-9] DEBUG c.p.s.s.JwtAuthenticationFilter - JWT Token found in request: /api/auth/me
+2026-03-09 20:58:41 [http-nio-8081-exec-9] DEBUG c.p.s.s.JwtAuthenticationFilter - Set Authentication for user: admin
