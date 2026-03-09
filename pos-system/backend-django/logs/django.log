@@ -5985,3 +5985,317 @@ INFO 2026-03-06 23:19:44,528 autoreload 10436 20616 C:\Users\Balamurugan P\AppDa
 INFO 2026-03-06 23:19:47,183 autoreload 21924 20388 Watching for file changes with StatReloader
 INFO 2026-03-06 23:20:04,840 autoreload 21924 20388 C:\Users\Balamurugan P\AppData\Roaming\Python\Python312\site-packages\django\apps\registry.py changed, reloading.
 INFO 2026-03-06 23:44:19,465 autoreload 21000 16400 Watching for file changes with StatReloader
+WARNING 2026-03-06 23:47:31,983 log 21000 11776 Not Found: /
+WARNING 2026-03-06 23:47:31,986 basehttp 21000 11776 "GET / HTTP/1.1" 404 3161
+WARNING 2026-03-06 23:47:32,190 log 21000 11776 Not Found: /favicon.ico
+WARNING 2026-03-06 23:47:32,196 basehttp 21000 11776 "GET /favicon.ico HTTP/1.1" 404 3212
+WARNING 2026-03-06 23:50:53,903 log 21000 16080 Bad Request: /api/auth/login/
+WARNING 2026-03-06 23:50:53,904 basehttp 21000 16080 "POST /api/auth/login/ HTTP/1.1" 400 54
+WARNING 2026-03-06 23:53:03,118 log 21000 19492 Unauthorized: /api/reporting/daily_sales/
+WARNING 2026-03-06 23:53:03,120 basehttp 21000 19492 "GET /api/reporting/daily_sales/?date=2026-03-06 HTTP/1.1" 401 171
+WARNING 2026-03-06 23:53:03,126 log 21000 19492 Unauthorized: /api/reporting/daily_sales/
+WARNING 2026-03-06 23:53:03,126 basehttp 21000 19492 "GET /api/reporting/daily_sales/?date=2026-03-06 HTTP/1.1" 401 171
+INFO 2026-03-06 23:53:04,892 basehttp 21000 16724 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-06 23:53:05,128 basehttp 21000 16724 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-06 23:55:20,785 basehttp 21000 11376 "POST /api/auth/verify/ HTTP/1.1" 200 87
+WARNING 2026-03-06 23:55:20,852 log 21000 11376 Unauthorized: /api/customers/loyalty/LOY3/
+WARNING 2026-03-06 23:55:20,853 basehttp 21000 11376 "GET /api/customers/loyalty/LOY3/ HTTP/1.1" 401 58
+INFO 2026-03-06 23:59:34,766 basehttp 21000 22716 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-06 23:59:34,819 basehttp 21000 22716 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-06 23:59:35,264 basehttp 21000 3468 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-06 23:59:35,302 basehttp 21000 22716 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-06 23:59:45,381 basehttp 21000 4940 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-06 23:59:54,729 basehttp 21000 22268 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-06 23:59:54,794 basehttp 21000 22268 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 00:00:29,411 basehttp 21000 23376 "POST /api/auth/verify/ HTTP/1.1" 200 87
+WARNING 2026-03-07 00:00:29,452 log 21000 23376 Unauthorized: /api/customers/loyalty/LOYAL001/
+WARNING 2026-03-07 00:00:29,453 basehttp 21000 23376 "GET /api/customers/loyalty/LOYAL001/ HTTP/1.1" 401 58
+INFO 2026-03-07 00:00:29,506 basehttp 21000 23376 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:00:29,597 basehttp 21000 23376 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:03:50,633 basehttp 21000 21676 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:04:10,273 basehttp 21000 20864 "POST /api/auth/verify/ HTTP/1.1" 200 87
+WARNING 2026-03-07 00:04:10,303 log 21000 20864 Unauthorized: /api/customers/loyalty/LOYAL001/
+WARNING 2026-03-07 00:04:10,304 basehttp 21000 20864 "GET /api/customers/loyalty/LOYAL001/ HTTP/1.1" 401 58
+INFO 2026-03-07 00:04:10,367 basehttp 21000 20864 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:04:10,444 basehttp 21000 20864 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:04:57,142 basehttp 21000 17180 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:04:58,858 basehttp 21000 17180 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:05:47,510 basehttp 21000 17412 "POST /api/auth/verify/ HTTP/1.1" 200 87
+WARNING 2026-03-07 00:05:47,534 log 21000 17412 Unauthorized: /api/customers/loyalty/LOYAL001/
+WARNING 2026-03-07 00:05:47,535 basehttp 21000 17412 "GET /api/customers/loyalty/LOYAL001/ HTTP/1.1" 401 58
+INFO 2026-03-07 00:05:47,577 basehttp 21000 6708 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:05:47,585 basehttp 21000 17412 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:06:36,389 basehttp 21000 12500 "POST /api/auth/verify/ HTTP/1.1" 200 87
+WARNING 2026-03-07 00:06:36,412 log 21000 12500 Unauthorized: /api/customers/loyalty/LOYAL001/
+WARNING 2026-03-07 00:06:36,412 basehttp 21000 12500 "GET /api/customers/loyalty/LOYAL001/ HTTP/1.1" 401 58
+INFO 2026-03-07 00:06:36,470 basehttp 21000 12500 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:06:36,483 basehttp 21000 24364 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:07:00,792 basehttp 21000 12484 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:07:00,795 basehttp 21000 22660 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:07:03,229 basehttp 21000 22660 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:07:03,467 basehttp 21000 12484 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:07:03,498 basehttp 21000 22660 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:07:09,077 basehttp 21000 3612 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:07:30,162 basehttp 21000 2060 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:10:51,878 basehttp 21000 4136 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 00:10:51,957 basehttp 21000 4136 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 00:11:16,023 basehttp 21000 19828 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:11:16,083 basehttp 21000 19828 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:11:16,158 basehttp 21000 19828 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 00:11:16,203 basehttp 21000 19828 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 00:11:16,377 basehttp 21000 19828 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:11:16,379 basehttp 21000 2344 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:11:21,325 basehttp 21000 2344 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:12:06,839 basehttp 21000 13696 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:12:07,079 basehttp 21000 14972 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:12:07,102 basehttp 21000 13696 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:12:36,517 basehttp 21000 1920 "POST /api/auth/verify/ HTTP/1.1" 200 87
+WARNING 2026-03-07 00:12:36,537 log 21000 1920 Unauthorized: /api/customers/loyalty/LOYAL001/
+WARNING 2026-03-07 00:12:36,538 basehttp 21000 1920 "GET /api/customers/loyalty/LOYAL001/ HTTP/1.1" 401 58
+INFO 2026-03-07 00:12:36,599 basehttp 21000 23312 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:12:36,614 basehttp 21000 1920 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:12:53,039 basehttp 21000 21776 "POST /api/auth/verify/ HTTP/1.1" 200 81
+WARNING 2026-03-07 00:12:53,575 log 21000 16180 Unauthorized: /api/reporting/daily_sales/
+WARNING 2026-03-07 00:12:53,577 basehttp 21000 16180 "GET /api/reporting/daily_sales/?date=2026-03-06 HTTP/1.1" 401 171
+WARNING 2026-03-07 00:12:53,581 log 21000 16180 Unauthorized: /api/reporting/daily_sales/
+WARNING 2026-03-07 00:12:53,582 basehttp 21000 16180 "GET /api/reporting/daily_sales/?date=2026-03-06 HTTP/1.1" 401 171
+INFO 2026-03-07 00:13:00,954 basehttp 21000 5620 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:14:27,320 basehttp 21000 3988 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:14:30,017 basehttp 21000 3988 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:14:30,063 basehttp 21000 3988 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:14:31,653 basehttp 21000 3988 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:14:45,961 basehttp 21000 2852 "POST /api/auth/verify/ HTTP/1.1" 200 87
+WARNING 2026-03-07 00:14:45,981 log 21000 2852 Unauthorized: /api/customers/loyalty/LOYAL001/
+WARNING 2026-03-07 00:14:45,981 basehttp 21000 2852 "GET /api/customers/loyalty/LOYAL001/ HTTP/1.1" 401 58
+INFO 2026-03-07 00:14:46,031 basehttp 21000 2852 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:14:46,032 basehttp 21000 12056 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:15:10,132 basehttp 21000 19612 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:15:17,360 basehttp 21000 7432 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:15:17,361 basehttp 21000 11688 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:16:55,124 basehttp 21000 23100 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:16:55,165 basehttp 21000 23100 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:16:56,805 basehttp 21000 23100 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:17:19,724 basehttp 21000 5484 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:17:19,735 basehttp 21000 888 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:17:48,847 basehttp 21000 24172 "POST /api/auth/verify/ HTTP/1.1" 200 87
+WARNING 2026-03-07 00:17:48,866 log 21000 24172 Unauthorized: /api/customers/loyalty/LOYAL001/
+WARNING 2026-03-07 00:17:48,867 basehttp 21000 24172 "GET /api/customers/loyalty/LOYAL001/ HTTP/1.1" 401 58
+INFO 2026-03-07 00:17:48,915 basehttp 21000 11568 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:17:48,915 basehttp 21000 24172 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:19:05,681 basehttp 21000 20908 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:19:05,683 basehttp 21000 22844 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:19:13,942 basehttp 21000 16696 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:19:13,953 basehttp 21000 12320 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:19:16,153 basehttp 21000 12320 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:19:16,357 basehttp 21000 12320 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:19:16,361 basehttp 21000 16696 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:19:26,889 basehttp 21000 24516 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:19:28,523 basehttp 21000 24516 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:19:39,997 basehttp 21000 21892 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:19:40,000 basehttp 21000 6104 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:19:44,246 basehttp 21000 6104 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:19:44,246 basehttp 21000 21892 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:19:46,709 basehttp 21000 21892 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:19:46,939 basehttp 21000 6104 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:19:46,951 basehttp 21000 21892 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:20:17,942 basehttp 21000 13768 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:22:01,956 basehttp 21000 11892 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 00:22:01,999 basehttp 21000 11892 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 00:22:02,123 basehttp 21000 11892 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:22:02,169 basehttp 21000 11892 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:22:02,805 basehttp 21000 11892 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:22:02,808 basehttp 21000 11668 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:22:07,018 basehttp 21000 11668 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:22:25,302 basehttp 21000 9072 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:22:25,628 basehttp 21000 9544 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:22:25,632 basehttp 21000 9072 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:22:52,816 basehttp 21000 20908 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:22:55,228 basehttp 21000 20908 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:23:32,167 basehttp 21000 13812 "POST /api/auth/verify/ HTTP/1.1" 200 81
+WARNING 2026-03-07 00:23:32,723 log 21000 3004 Unauthorized: /api/reporting/daily_sales/
+WARNING 2026-03-07 00:23:32,724 basehttp 21000 3004 "GET /api/reporting/daily_sales/?date=2026-03-06 HTTP/1.1" 401 171
+WARNING 2026-03-07 00:23:32,733 log 21000 3004 Unauthorized: /api/reporting/daily_sales/
+WARNING 2026-03-07 00:23:32,735 basehttp 21000 3004 "GET /api/reporting/daily_sales/?date=2026-03-06 HTTP/1.1" 401 171
+INFO 2026-03-07 00:24:01,699 basehttp 21000 19264 "POST /api/auth/verify/ HTTP/1.1" 200 87
+WARNING 2026-03-07 00:24:01,717 log 21000 19264 Unauthorized: /api/customers/loyalty/LOYAL001/
+WARNING 2026-03-07 00:24:01,718 basehttp 21000 19264 "GET /api/customers/loyalty/LOYAL001/ HTTP/1.1" 401 58
+INFO 2026-03-07 00:24:01,753 basehttp 21000 21916 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:24:01,779 basehttp 21000 19264 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:24:27,172 basehttp 21000 20256 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:24:44,014 basehttp 21000 15608 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:24:56,495 basehttp 21000 8244 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:24:56,495 basehttp 21000 8396 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:26:38,245 basehttp 21000 15948 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:26:40,388 basehttp 21000 15948 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:27:46,517 basehttp 21000 12720 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:28:00,328 basehttp 21000 18828 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:28:26,996 basehttp 21000 16544 "POST /api/auth/verify/ HTTP/1.1" 200 87
+WARNING 2026-03-07 00:28:27,014 log 21000 16544 Unauthorized: /api/customers/loyalty/LOYAL001/
+WARNING 2026-03-07 00:28:27,015 basehttp 21000 16544 "GET /api/customers/loyalty/LOYAL001/ HTTP/1.1" 401 58
+INFO 2026-03-07 00:28:27,076 basehttp 21000 23408 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:28:27,076 basehttp 21000 16544 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:28:40,682 basehttp 21000 13816 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:29:18,681 basehttp 21000 18240 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:29:18,682 basehttp 21000 17304 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:29:27,603 basehttp 21000 9584 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:30:19,019 basehttp 21000 6300 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:30:19,051 basehttp 21000 6300 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:30:20,957 basehttp 21000 6300 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 00:30:31,686 basehttp 21000 22128 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:30:31,754 basehttp 21000 22128 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 00:34:04,567 basehttp 21000 18400 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 00:34:04,628 basehttp 21000 18400 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 00:34:08,396 basehttp 21000 18400 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 00:34:08,466 basehttp 21000 18400 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 19:20:31,393 autoreload 20868 20872 Watching for file changes with StatReloader
+INFO 2026-03-07 19:22:23,227 basehttp 20868 12964 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:22:23,418 basehttp 20868 12964 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:22:32,401 basehttp 20868 23416 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:22:32,401 basehttp 20868 23420 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:22:34,204 basehttp 20868 23420 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:22:34,666 basehttp 20868 23420 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:22:34,666 basehttp 20868 23416 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:22:45,507 basehttp 20868 21360 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 19:22:45,549 basehttp 20868 21360 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 19:22:47,086 basehttp 20868 21360 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 19:22:47,606 basehttp 20868 20688 "OPTIONS /api/reporting/daily_sales/?date=2026-03-07 HTTP/1.1" 200 0
+INFO 2026-03-07 19:22:47,606 basehttp 20868 20704 "OPTIONS /api/reporting/daily_sales/?date=2026-03-07 HTTP/1.1" 200 0
+WARNING 2026-03-07 19:22:47,614 log 20868 20704 Unauthorized: /api/reporting/daily_sales/
+WARNING 2026-03-07 19:22:47,614 basehttp 20868 20704 "GET /api/reporting/daily_sales/?date=2026-03-07 HTTP/1.1" 401 171
+WARNING 2026-03-07 19:22:47,618 log 20868 20704 Unauthorized: /api/reporting/daily_sales/
+WARNING 2026-03-07 19:22:47,619 basehttp 20868 20704 "GET /api/reporting/daily_sales/?date=2026-03-07 HTTP/1.1" 401 171
+INFO 2026-03-07 19:22:52,189 basehttp 20868 13024 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:22:52,469 basehttp 20868 13024 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:22:52,518 basehttp 20868 13024 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:25:12,147 basehttp 20868 25204 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 19:25:12,194 basehttp 20868 25204 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 19:40:31,745 basehttp 20868 16468 "POST /api/auth/verify/ HTTP/1.1" 200 87
+WARNING 2026-03-07 19:40:31,838 log 20868 16468 Unauthorized: /api/customers/loyalty/LOYAL001/
+WARNING 2026-03-07 19:40:31,839 basehttp 20868 16468 "GET /api/customers/loyalty/LOYAL001/ HTTP/1.1" 401 58
+INFO 2026-03-07 19:40:31,913 basehttp 20868 19224 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 19:40:31,925 basehttp 20868 16468 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 19:40:49,414 basehttp 20868 2472 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:50:02,083 basehttp 20868 24968 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:50:02,084 basehttp 20868 21304 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:50:03,583 basehttp 20868 21304 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:50:03,820 basehttp 20868 21304 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:50:03,821 basehttp 20868 24968 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 19:59:42,993 basehttp 20868 11288 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 19:59:43,043 basehttp 20868 11288 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 19:59:44,304 basehttp 20868 11288 "POST /api/auth/verify/ HTTP/1.1" 200 81
+WARNING 2026-03-07 19:59:44,873 log 20868 23844 Unauthorized: /api/reporting/daily_sales/
+WARNING 2026-03-07 19:59:44,873 basehttp 20868 23844 "GET /api/reporting/daily_sales/?date=2026-03-07 HTTP/1.1" 401 171
+WARNING 2026-03-07 19:59:44,876 log 20868 23844 Unauthorized: /api/reporting/daily_sales/
+WARNING 2026-03-07 19:59:44,877 basehttp 20868 23844 "GET /api/reporting/daily_sales/?date=2026-03-07 HTTP/1.1" 401 171
+INFO 2026-03-07 20:04:35,443 basehttp 20868 8580 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:04:35,464 basehttp 20868 10936 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:04:36,948 basehttp 20868 10936 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:04:37,199 basehttp 20868 8580 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:04:37,200 basehttp 20868 10936 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:05:41,942 basehttp 20868 24312 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 20:05:42,014 basehttp 20868 24312 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 20:05:53,144 basehttp 20868 8836 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 20:05:53,209 basehttp 20868 8836 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 20:25:19,837 basehttp 20868 21672 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:25:25,615 basehttp 20868 14580 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:25:38,724 basehttp 20868 24952 "POST /api/auth/verify/ HTTP/1.1" 200 87
+WARNING 2026-03-07 20:25:38,751 log 20868 24952 Unauthorized: /api/customers/loyalty/LOYAL001/
+WARNING 2026-03-07 20:25:38,752 basehttp 20868 24952 "GET /api/customers/loyalty/LOYAL001/ HTTP/1.1" 401 58
+INFO 2026-03-07 20:25:38,810 basehttp 20868 24952 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:25:38,812 basehttp 20868 19020 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:25:49,857 basehttp 20868 18040 "POST /api/auth/verify/ HTTP/1.1" 200 90
+WARNING 2026-03-07 20:25:50,121 log 20868 1984 Unauthorized: /api/reporting/daily_sales/
+WARNING 2026-03-07 20:25:50,122 basehttp 20868 1984 "GET /api/reporting/daily_sales/?date=2026-03-07 HTTP/1.1" 401 171
+INFO 2026-03-07 20:25:50,257 basehttp 20868 18040 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:26:44,263 basehttp 20868 24848 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:26:44,316 basehttp 20868 24848 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:26:45,271 basehttp 20868 24848 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:26:56,846 basehttp 20868 24328 "POST /api/auth/verify/ HTTP/1.1" 200 87
+WARNING 2026-03-07 20:26:56,867 log 20868 24328 Unauthorized: /api/customers/loyalty/LOYAL001/
+WARNING 2026-03-07 20:26:56,869 basehttp 20868 24328 "GET /api/customers/loyalty/LOYAL001/ HTTP/1.1" 401 58
+INFO 2026-03-07 20:26:56,924 basehttp 20868 24328 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:26:56,927 basehttp 20868 1936 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:27:04,231 basehttp 20868 9016 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:27:19,256 basehttp 20868 21764 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:27:19,276 basehttp 20868 6164 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:27:20,918 basehttp 20868 6164 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:27:21,162 basehttp 20868 21764 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:27:21,166 basehttp 20868 6164 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:29:13,341 basehttp 20868 21364 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:29:13,386 basehttp 20868 21364 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:29:14,501 basehttp 20868 21364 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:29:27,229 basehttp 20868 2844 "POST /api/auth/verify/ HTTP/1.1" 200 87
+WARNING 2026-03-07 20:29:27,250 log 20868 2844 Unauthorized: /api/customers/loyalty/LOYAL001/
+WARNING 2026-03-07 20:29:27,251 basehttp 20868 2844 "GET /api/customers/loyalty/LOYAL001/ HTTP/1.1" 401 58
+INFO 2026-03-07 20:29:27,313 basehttp 20868 2844 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:29:27,315 basehttp 20868 15024 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:29:35,128 basehttp 20868 4976 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:29:46,030 basehttp 20868 8060 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:29:57,907 basehttp 20868 2772 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:30:00,432 basehttp 20868 2772 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:30:00,437 basehttp 20868 20076 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:30:03,134 basehttp 20868 20076 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:30:05,476 basehttp 20868 17360 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:30:05,485 basehttp 20868 20076 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:30:26,534 basehttp 20868 20116 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:30:35,216 basehttp 20868 13592 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:30:35,217 basehttp 20868 15068 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:30:36,544 basehttp 20868 15068 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:36:42,230 basehttp 20868 416 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:36:42,241 basehttp 20868 23644 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:36:44,958 basehttp 20868 23644 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:36:47,566 basehttp 20868 23644 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:36:47,578 basehttp 20868 18864 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:36:51,093 basehttp 20868 18864 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:37:03,280 basehttp 20868 22940 "POST /api/auth/verify/ HTTP/1.1" 200 87
+WARNING 2026-03-07 20:37:03,306 log 20868 22940 Unauthorized: /api/customers/loyalty/LOYAL001/
+WARNING 2026-03-07 20:37:03,307 basehttp 20868 22940 "GET /api/customers/loyalty/LOYAL001/ HTTP/1.1" 401 58
+INFO 2026-03-07 20:37:03,365 basehttp 20868 22940 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:37:03,368 basehttp 20868 14524 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:37:22,623 basehttp 20868 25536 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:37:22,624 basehttp 20868 19132 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:37:23,732 basehttp 20868 19132 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:37:28,789 basehttp 20868 24464 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:37:28,793 basehttp 20868 15672 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:37:31,954 basehttp 20868 15672 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:37:40,567 basehttp 20868 24852 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:37:40,587 basehttp 20868 17040 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:37:41,606 basehttp 20868 17040 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:37:55,265 basehttp 20868 11680 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:37:55,288 basehttp 20868 15776 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:37:58,287 basehttp 20868 15776 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:48:36,858 basehttp 20868 15928 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 20:48:36,922 basehttp 20868 15928 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 20:48:42,594 basehttp 20868 11748 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 20:48:42,727 basehttp 20868 11748 "POST /api/auth/verify/ HTTP/1.1" 200 81
+INFO 2026-03-07 20:48:44,323 basehttp 20868 11748 "POST /api/auth/verify/ HTTP/1.1" 200 81
+WARNING 2026-03-07 20:48:44,843 log 20868 21280 Unauthorized: /api/reporting/daily_sales/
+WARNING 2026-03-07 20:48:44,845 basehttp 20868 21280 "GET /api/reporting/daily_sales/?date=2026-03-07 HTTP/1.1" 401 171
+WARNING 2026-03-07 20:48:44,852 log 20868 21280 Unauthorized: /api/reporting/daily_sales/
+WARNING 2026-03-07 20:48:44,854 basehttp 20868 21280 "GET /api/reporting/daily_sales/?date=2026-03-07 HTTP/1.1" 401 171
+INFO 2026-03-07 20:48:54,001 basehttp 20868 22636 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:48:54,065 basehttp 20868 22636 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:48:57,020 basehttp 20868 22636 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:49:07,727 basehttp 20868 2476 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:49:07,750 basehttp 20868 23788 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:49:10,254 basehttp 20868 23788 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:49:43,826 basehttp 20868 25556 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:49:43,826 basehttp 20868 18312 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:49:45,840 basehttp 20868 18312 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:50:24,921 basehttp 20868 18072 "POST /api/auth/verify/ HTTP/1.1" 200 87
+INFO 2026-03-07 20:56:40,434 basehttp 20868 25584 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:56:40,434 basehttp 20868 6272 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:56:42,075 basehttp 20868 6272 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:59:04,901 basehttp 20868 24644 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:59:04,901 basehttp 20868 23824 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:59:07,547 basehttp 20868 23824 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:59:26,603 basehttp 20868 14580 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:59:26,604 basehttp 20868 4412 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:59:29,645 basehttp 20868 4412 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:59:37,927 basehttp 20868 25284 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:59:37,932 basehttp 20868 24812 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 20:59:39,771 basehttp 20868 24812 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 21:11:18,686 basehttp 20868 25348 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 21:11:18,693 basehttp 20868 3360 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 21:11:20,489 basehttp 20868 3360 "POST /api/auth/verify/ HTTP/1.1" 200 90
+INFO 2026-03-07 21:15:44,271 autoreload 17640 11124 Watching for file changes with StatReloader

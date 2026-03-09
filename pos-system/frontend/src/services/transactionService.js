@@ -24,5 +24,10 @@ export const transactionService = {
   sendReceipt: async (id, email) => {
     const response = await api.post(`/transactions/${id}/receipt`, { email });
     return response.data;
+  },
+
+  getTransactionsByCustomer: async (customerId) => {
+    const response = await api.get(`/transactions/customer/${customerId}`);
+    return response.data;
   }
 };

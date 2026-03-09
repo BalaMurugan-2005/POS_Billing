@@ -1,4 +1,5 @@
 com\pos\system\config\CorsConfig.class
+com\pos\system\services\PaymentRequestService.class
 com\pos\system\dto\TransactionDTO$TransactionDTOBuilder.class
 com\pos\system\services\UserService.class
 com\pos\system\models\Product.class
@@ -28,6 +29,7 @@ com\pos\system\services\TransactionService.class
 com\pos\system\models\Inventory$InventoryBuilder.class
 com\pos\system\services\CustomUserDetailsService.class
 com\pos\system\utils\Constants.class
+com\pos\system\models\PaymentRequest$PaymentRequestBuilder.class
 com\pos\system\models\Product$ProductBuilder.class
 com\pos\system\models\Transaction$TransactionBuilder.class
 com\pos\system\config\SwaggerConfig.class
@@ -35,6 +37,7 @@ com\pos\system\dto\ReportDTO$ReportDTOBuilder.class
 com\pos\system\utils\JwtUtil.class
 com\pos\system\exception\GlobalExceptionHandler.class
 com\pos\system\dto\ReportDTO$ProductSalesDTO$ProductSalesDTOBuilder.class
+com\pos\system\controllers\PaymentRequestController.class
 com\pos\system\models\TransactionItem.class
 com\pos\system\models\Customer.class
 com\pos\system\security\JwtAuthenticationEntryPoint.class
@@ -59,6 +62,8 @@ com\pos\system\dto\UserDTO$UserDTOBuilder.class
 com\pos\system\repositories\ProductRepository.class
 com\pos\system\dto\LoginRequest.class
 com\pos\system\repositories\UserRepository.class
+com\pos\system\models\PaymentRequest.class
+com\pos\system\repositories\PaymentRequestRepository.class
 com\pos\system\PosSystemApplication.class
 com\pos\system\controllers\CustomerController.class
 com\pos\system\controllers\TransactionController.class

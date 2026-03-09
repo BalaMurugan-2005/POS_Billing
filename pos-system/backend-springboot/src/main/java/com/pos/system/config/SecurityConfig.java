@@ -48,9 +48,12 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll()
                 
                 // Role-based endpoints
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/cashier/**").hasAnyRole("ADMIN", "CASHIER")
-                .requestMatchers("/customer/**").hasAnyRole("ADMIN", "CUSTOMER")
+                .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/cashier/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER")
+                .requestMatchers("/customers/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
+                .requestMatchers("/customer/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
+                .requestMatchers("/transactions/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
+                .requestMatchers("/payment-requests/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
                 
                 // All other endpoints require authentication
                 .anyRequest().authenticated()

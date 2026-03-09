@@ -124,9 +124,18 @@ const Receipt = ({ isOpen, onClose, transaction }) => {
               </div>
 
               <div className="mb-4 text-sm">
-                <p>Receipt #: {transaction.id}</p>
-                <p>Date: {format(new Date(transaction.timestamp), 'dd/MM/yyyy HH:mm')}</p>
-                <p>Cashier: {transaction.cashierName || 'N/A'}</p>
+                <p>Receipt #: {transaction.id || transaction.transactionNumber}</p>
+                <p>Date: {(() => {
+                  try {
+                    const date = transaction.createdAt ? new Date(transaction.createdAt) :
+                      transaction.timestamp ? new Date(transaction.timestamp) :
+                        new Date();
+                    return isNaN(date.getTime()) ? format(new Date(), 'dd/MM/yyyy HH:mm') : format(date, 'dd/MM/yyyy HH:mm');
+                  } catch (e) {
+                    return format(new Date(), 'dd/MM/yyyy HH:mm');
+                  }
+                })()}</p>
+                <p>Cashier: {transaction.cashier?.name || transaction.cashierName || 'N/A'}</p>
                 {transaction.customer && (
                   <p>Customer: {transaction.customer.name}</p>
                 )}
@@ -143,10 +152,10 @@ const Receipt = ({ isOpen, onClose, transaction }) => {
               <div className="mb-4">
                 {transaction.items.map((item, index) => (
                   <div key={index} className="flex justify-between text-sm mb-2">
-                    <span className="flex-1">{item.name}</span>
+                    <span className="flex-1">{item.productName || item.name}</span>
                     <span className="w-16 text-center">{item.quantity}</span>
                     <span className="w-20 text-right">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      ${((item.price || 0) * (item.quantity || 1)).toFixed(2)}
                     </span>
                   </div>
                 ))}

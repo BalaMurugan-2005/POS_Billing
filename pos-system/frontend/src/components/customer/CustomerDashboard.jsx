@@ -6,12 +6,13 @@ import { format } from 'date-fns';
 import { DocumentTextIcon, QrCodeIcon, UserIcon, ShoppingBagIcon, CreditCardIcon } from '@heroicons/react/24/outline';
 import { productService } from '../../services/productService';
 import { useCart } from '../../hooks/useCart';
+import { paymentRequestService } from '../../services/paymentRequestService';
 import toast from 'react-hot-toast';
 
 const CustomerDashboard = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('shopping');
-  const { cart, addItem, removeItem, updateQuantity } = useCart();
+  const { cart, addItem, removeItem, updateQuantity, clearCart } = useCart();
   const [products, setProducts] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -29,52 +30,50 @@ const CustomerDashboard = () => {
     }
   }, [activeTab]);
 
-  // Listen for payment requests from the cashier
+  // Listen for payment requests from the cashier (Polling backend)
   useEffect(() => {
-    const handleStorageChange = (e) => {
-      // LocalStorage event only fires on OTHER tabs
-      if (e.key === 'active_payment_request' && e.newValue) {
-        const parsed = JSON.parse(e.newValue);
-        if (String(parsed.customerId) === String(user?.id)) {
-          console.log('Payment request received:', parsed);
-          setPaymentRequest(parsed);
+    if (!user?.id) return;
+
+    const pollPaymentRequests = async () => {
+      try {
+        const requests = await paymentRequestService.getActiveRequests(user.id);
+        if (requests.length > 0 && !paymentRequest) {
+          const latest = requests[0];
+          setPaymentRequest(latest);
           setActiveTab('billing');
           toast('New Payment Request Received!', {
             icon: '💳',
             duration: 4000
           });
         }
+      } catch (error) {
+        console.error('Failed to poll payment requests:', error);
       }
     };
 
-    // For the SAME tab (if testing in one window)
-    const checkInterval = setInterval(() => {
-      const activeRequest = localStorage.getItem('active_payment_request');
-      if (activeRequest) {
-        const parsed = JSON.parse(activeRequest);
-        if (String(parsed.customerId) === String(user?.id) && !paymentRequest) {
-          setPaymentRequest(parsed);
-          setActiveTab('billing');
-        }
-      }
-    }, 1000);
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      clearInterval(checkInterval);
-    };
+    const interval = setInterval(pollPaymentRequests, 3000);
+    return () => clearInterval(interval);
   }, [user, paymentRequest]);
 
-  const handleConfirmPayment = () => {
+  // Handle automatic history reflection (Poll every 10 seconds if active)
+  useEffect(() => {
+    if (!user?.id || activeTab !== 'history') return;
+
+    const interval = setInterval(fetchTransactionHistory, 10000);
+    return () => clearInterval(interval);
+  }, [user, activeTab]);
+
+  const handleConfirmPayment = async () => {
     toast.loading('Processing payment...', { id: 'paying' });
-    setTimeout(() => {
-      const result = { ...paymentRequest, status: 'paid', timestamp: new Date().toISOString() };
-      localStorage.setItem('payment_result', JSON.stringify(result));
-      localStorage.removeItem('active_payment_request');
+    try {
+      await paymentRequestService.updateStatus(paymentRequest.requestId, 'COMPLETED');
       toast.success('Payment successful!', { id: 'paying' });
       setPaymentRequest(null);
-    }, 2000);
+      clearCart(); // Clear cart to reset QR code and shopping bag
+      fetchTransactionHistory(); // Refresh history
+    } catch (error) {
+      toast.error('Payment failed', { id: 'paying' });
+    }
   };
 
   const fetchProducts = async () => {
@@ -90,20 +89,23 @@ const CustomerDashboard = () => {
   };
 
   const fetchTransactionHistory = async () => {
+    if (!user?.id) return;
     setLoading(true);
     try {
-      // Mock data - replace with actual API call
-      setTransactions([
-        {
-          id: 'TXN001',
-          date: new Date(),
-          total: 125.50,
-          items: 5,
-          status: 'completed',
-        },
-      ]);
+      // Use the actual API endpoint
+      const response = await transactionService.getTransactionsByCustomer(user.id);
+
+      const mapped = response.map(t => ({
+        id: t.transactionNumber,
+        date: new Date(t.createdAt),
+        total: t.total,
+        items: t.items?.length || 0,
+        status: t.status.toLowerCase(),
+      }));
+      setTransactions(mapped);
     } catch (error) {
       console.error('Failed to fetch transactions:', error);
+      toast.error('Could not load purchase history');
     } finally {
       setLoading(false);
     }
@@ -433,7 +435,7 @@ const CustomerDashboard = () => {
                     </button>
                   </div>
                   <p className="mt-4 text-xs text-gray-400">
-                    Transaction ID: {paymentRequest.id}
+                    Transaction ID: {paymentRequest.requestId}
                   </p>
                 </div>
               )}

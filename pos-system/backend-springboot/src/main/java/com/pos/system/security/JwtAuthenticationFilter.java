@@ -41,20 +41,51 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String jwt = parseJwt(request);
             
             if (jwt != null) {
+                log.debug("JWT Token found in request: {}", request.getRequestURI());
                 // Verify with Django microservice
                 if (verifyWithDjango(jwt)) {
-                    String username = jwtUtil.getUsernameFromToken(jwt);
-                    
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                    
-                    UsernamePasswordAuthenticationToken authentication = 
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                    
-                    log.debug("Set Authentication for user: {}", username);
+                    try {
+                        String username = null;
+                        try {
+                            username = jwtUtil.getUsernameFromToken(jwt);
+                        } catch (Exception e) {
+                            log.warn("Verified by Django but Spring could not parse locally - signature likely mismatch. Attempting to decode payload...");
+                            // If Django verified but Spring couldn't (signature mismatch), 
+                            // we can try to get the subject from the payload as we already trust it.
+                            String[] chunks = jwt.split("\\.");
+                            if (chunks.length > 1) {
+                                String payload = new String(java.util.Base64.getUrlDecoder().decode(chunks[1]));
+                                try {
+                                    Map<String, Object> map = new com.fasterxml.jackson.databind.ObjectMapper().readValue(payload, Map.class);
+                                    // Try common keys for username/subject
+                                    username = (String) map.get("sub");
+                                    if (username == null) username = (String) map.get("username");
+                                    if (username == null) username = (String) map.get("email");
+                                    if (username == null && map.get("user_id") != null) {
+                                        username = map.get("user_id").toString();
+                                    }
+                                    log.debug("Extracted username from payload: {}", username);
+                                } catch (Exception ex) {
+                                    log.error("Failed to decode payload: {}", ex.getMessage());
+                                }
+                            }
+                        }
+                        
+                        if (username != null) {
+                            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                            
+                            UsernamePasswordAuthenticationToken authentication = 
+                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                            
+                            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                            
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
+                            
+                            log.debug("Set Authentication for user: {}", username);
+                        }
+                    } catch (Exception e) {
+                        log.error("Error setting authentication: {}", e.getMessage());
+                    }
                 } else {
                     log.error("Token verification with Django failed");
                 }
@@ -68,6 +99,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean verifyWithDjango(String token) {
         try {
+            // 1. First check locally - if it's a valid Spring-signed token, trust it
+            if (jwtUtil.validateToken(token)) {
+                return true;
+            }
+
+            // 2. If local check fails, it might be a Django token. Verify with Django service.
             String djangoUrl = "http://localhost:8000/api/auth/verify/";
             
             HttpHeaders headers = new HttpHeaders();
@@ -80,12 +117,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 Boolean isValid = (Boolean) response.getBody().get("valid");
-                return isValid != null && isValid;
+                if (isValid != null && isValid) {
+                    // Try to extract username from the Django response if provided
+                    String usernameFromDjango = (String) response.getBody().get("username");
+                    if (usernameFromDjango != null) {
+                        // Store it in the request so we can skip local parsing if needed
+                        // (Alternatively, we could set authentication here)
+                    }
+                    return true;
+                }
             }
             return false;
         } catch (Exception e) {
             log.error("Error communicating with Django verification service: {}", e.getMessage());
-            // Fallback to local verification if Django is unavailable
+            // Final fallback to local verification if Django is unavailable
             return jwtUtil.validateToken(token);
         }
     }

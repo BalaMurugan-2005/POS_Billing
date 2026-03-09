@@ -3,6 +3,7 @@ import { Dialog, Tab } from '@headlessui/react';
 import { useCart } from '../../hooks/useCart';
 import { useOfflineSync } from '../../hooks/useOfflineSync';
 import { transactionService } from '../../services/transactionService';
+import { paymentRequestService } from '../../services/paymentRequestService';
 import { motion } from 'framer-motion';
 import { BanknotesIcon, CreditCardIcon, DevicePhoneMobileIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
@@ -30,7 +31,12 @@ const PaymentModal = ({ isOpen, onClose, onComplete }) => {
   const handleCashPayment = async () => {
     const paid = parseFloat(paidAmount);
     if (paid < cart.total) {
-      toast.error('Insufficient amount paid');
+      if (window.confirm(`Amount paid ($${paid}) is less than total ($${cart.total}). Process anyway as a partial/credit payment?`)) {
+        await processPayment('cash', paid);
+        await completeTransaction();
+      } else {
+        toast.error('Payment cancelled');
+      }
       return;
     }
 
@@ -51,63 +57,20 @@ const PaymentModal = ({ isOpen, onClose, onComplete }) => {
       style: { minWidth: '300px' }
     });
 
-    // Broadcast request to customer (simulated via localStorage)
-    const requestData = {
-      id: `PAY-${Date.now()}`,
-      customerId: String(cart.customer.id),
-      amount: cart.total,
-      method: method,
-      items: cart.items.length
-    };
+    try {
+      const request = await paymentRequestService.createRequest(cart.customer.id, cart.total, method);
 
-    // Clear any old results first
-    localStorage.removeItem('payment_result');
-    localStorage.setItem('active_payment_request', JSON.stringify(requestData));
+      const paymentResult = await paymentRequestService.waitForPayment(request.requestId);
 
-    // Listen for customer action (Storage event for cross-tab, Interval for same-tab)
-    const handleResponse = (e) => {
-      if (e.key === 'payment_result' && e.newValue) {
-        const parsed = JSON.parse(e.newValue);
-        if (parsed.id === requestData.id && parsed.status === 'paid') {
-          cleanup();
-          setRequestStatus('success');
-          toast.success(`Payment Received from ${cart.customer.name}!`, { id: loadingToastId });
-          processPayment(method, cart.total);
-        }
-      }
-    };
+      setRequestStatus('success');
+      toast.success(`Payment Received from ${cart.customer.name}!`, { id: loadingToastId });
+      processPayment(method, cart.total);
 
-    const checkInterval = setInterval(() => {
-      const result = localStorage.getItem('payment_result');
-      if (result) {
-        const parsed = JSON.parse(result);
-        if (parsed.id === requestData.id && parsed.status === 'paid') {
-          cleanup();
-          setRequestStatus('success');
-          toast.success(`Payment Received from ${cart.customer.name}!`, { id: loadingToastId });
-          processPayment(method, cart.total);
-        }
-      }
-    }, 1000);
-
-    const cleanup = () => {
-      window.removeEventListener('storage', handleResponse);
-      clearInterval(checkInterval);
-      localStorage.removeItem('payment_result');
-    };
-
-    window.addEventListener('storage', handleResponse);
-
-    // Safety timeout (5 minutes)
-    setTimeout(() => {
-      cleanup();
-      if (requestStatus === 'waiting') {
-        setIsRequestSent(false);
-        setRequestStatus('idle');
-        localStorage.removeItem('active_payment_request');
-        toast.error('Payment request timed out', { id: loadingToastId });
-      }
-    }, 300000);
+    } catch (error) {
+      setIsRequestSent(false);
+      setRequestStatus('idle');
+      toast.error(error.message || 'Payment request failed', { id: loadingToastId });
+    }
   };
 
   const handleCardPayment = () => sendDigitalRequest('card');

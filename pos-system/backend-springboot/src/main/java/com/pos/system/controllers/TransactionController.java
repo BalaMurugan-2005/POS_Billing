@@ -73,6 +73,12 @@ public class TransactionController {
         return ResponseEntity.ok(new ApiResponse(true, "Receipt sent successfully to " + email));
     }
 
+    @GetMapping("/customer/{customerId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER', 'CUSTOMER')")
+    public ResponseEntity<List<TransactionDTO>> getTransactionsByCustomer(@PathVariable Long customerId) {
+        return ResponseEntity.ok(transactionService.getTransactionsByCustomer(customerId));
+    }
+
     @GetMapping("/stats/today")
     @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER')")
     public ResponseEntity<?> getTodayStats() {

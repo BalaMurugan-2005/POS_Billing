@@ -154,6 +154,16 @@ public class TransactionService {
                 .collect(Collectors.toList());
     }
 
+    public List<TransactionDTO> getTransactionsByCustomer(Long userId) {
+        Customer customer = customerRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Customer not found for user: " + userId));
+        
+        return transactionRepository.findByCustomerId(customer.getId())
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public TransactionDTO voidTransaction(Long id, String reason) {
         Transaction transaction = transactionRepository.findById(id)
