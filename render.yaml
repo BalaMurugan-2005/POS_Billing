@@ -1,9 +1,7 @@
 ##############################################################################
 # render.yaml — Infrastructure-as-Code for Render.com
-# This file must live at the ROOT of the GitHub repository.
-#
-# Repo root is: POS_Billing/
-# Services are inside:  POS_Billing/pos-system/
+# This file is at the ROOT of the GitHub repository (POS_Billing/).
+# All services live inside the pos-system/ subfolder.
 #
 # Deploy order: 1) PostgreSQL  2) Django  3) Spring Boot  4) React
 ##############################################################################
@@ -11,7 +9,7 @@
 services:
 
   # ─────────────────────────────────────────────────────────────────────────
-  # 1. Django Backend (Web Service)
+  # 1. Django Backend
   # ─────────────────────────────────────────────────────────────────────────
   - type: web
     name: pos-django
