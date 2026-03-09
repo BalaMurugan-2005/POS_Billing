@@ -15,7 +15,7 @@ services:
     name: pos-django
     runtime: python
     rootDir: pos-system/backend-django
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --fake-initial --noinput
     startCommand: gunicorn pos_system.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
     plan: free
     envVars:
