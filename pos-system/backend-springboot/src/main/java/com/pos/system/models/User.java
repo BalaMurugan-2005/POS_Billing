@@ -60,10 +60,31 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // Django AbstractUser required fields
+    @Column(name = "is_superuser")
+    @Builder.Default
+    private boolean isSuperuser = false;
+
+    @Column(name = "is_staff")
+    @Builder.Default
+    private boolean isStaff = false;
+
+    @Column(name = "first_name")
+    @Builder.Default
+    private String firstName = "";
+
+    @Column(name = "last_name")
+    @Builder.Default
+    private String lastName = "";
+
+    @Column(name = "date_joined")
+    private LocalDateTime dateJoined;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+        dateJoined = LocalDateTime.now();
     }
 
     @PreUpdate
