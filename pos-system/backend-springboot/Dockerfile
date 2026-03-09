@@ -20,6 +20,5 @@ WORKDIR /app
 COPY --from=build /app/target/pos-system-1.0.0.jar app.jar
 
 # Render injects $PORT at runtime — Spring Boot reads server.port=${PORT:8081}
-EXPOSE 8081
 
 ENTRYPOINT ["java", "-Xmx400m", "-Xms200m", "-jar", "app.jar"]
