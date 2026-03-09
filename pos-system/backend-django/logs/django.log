@@ -6299,3 +6299,18 @@ INFO 2026-03-07 21:11:18,686 basehttp 20868 25348 "POST /api/auth/verify/ HTTP/1
 INFO 2026-03-07 21:11:18,693 basehttp 20868 3360 "POST /api/auth/verify/ HTTP/1.1" 200 90
 INFO 2026-03-07 21:11:20,489 basehttp 20868 3360 "POST /api/auth/verify/ HTTP/1.1" 200 90
 INFO 2026-03-07 21:15:44,271 autoreload 17640 11124 Watching for file changes with StatReloader
+INFO 2026-03-09 16:34:28,247 autoreload 5912 15928 Watching for file changes with StatReloader
+WARNING 2026-03-09 16:36:07,081 log 5912 23776 Unauthorized: /api/auth/verify/
+WARNING 2026-03-09 16:36:07,086 log 5912 23780 Unauthorized: /api/auth/verify/
+WARNING 2026-03-09 16:36:07,089 basehttp 5912 23776 "POST /api/auth/verify/ HTTP/1.1" 401 43
+WARNING 2026-03-09 16:36:07,089 basehttp 5912 23780 "POST /api/auth/verify/ HTTP/1.1" 401 43
+WARNING 2026-03-09 16:36:07,728 log 5912 23816 Unauthorized: /api/auth/verify/
+WARNING 2026-03-09 16:36:07,730 basehttp 5912 23816 "POST /api/auth/verify/ HTTP/1.1" 401 43
+WARNING 2026-03-09 16:36:07,775 log 5912 23820 Unauthorized: /api/auth/verify/
+WARNING 2026-03-09 16:36:07,776 basehttp 5912 23820 "POST /api/auth/verify/ HTTP/1.1" 401 43
+INFO 2026-03-09 16:36:21,286 basehttp 5912 17644 "OPTIONS /api/reporting/daily_sales/?date=2026-03-09 HTTP/1.1" 200 0
+INFO 2026-03-09 16:36:21,304 basehttp 5912 3672 "OPTIONS /api/reporting/daily_sales/?date=2026-03-09 HTTP/1.1" 200 0
+WARNING 2026-03-09 16:36:21,328 log 5912 17644 Unauthorized: /api/reporting/daily_sales/
+WARNING 2026-03-09 16:36:21,331 basehttp 5912 17644 "GET /api/reporting/daily_sales/?date=2026-03-09 HTTP/1.1" 401 171
+WARNING 2026-03-09 16:36:21,342 log 5912 17644 Unauthorized: /api/reporting/daily_sales/
+WARNING 2026-03-09 16:36:21,344 basehttp 5912 17644 "GET /api/reporting/daily_sales/?date=2026-03-09 HTTP/1.1" 401 171
