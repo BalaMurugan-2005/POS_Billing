@@ -50,8 +50,10 @@ public class SecurityConfig {
                 // Role-based endpoints
                 .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers("/cashier/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER")
-                .requestMatchers("/customers/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
-                .requestMatchers("/customer/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
+                // CASHIER needs /customers/** to look up customer profiles during QR scan
+                .requestMatchers("/customers/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
+                .requestMatchers("/customer/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
+                .requestMatchers("/products/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
                 .requestMatchers("/transactions/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
                 .requestMatchers("/payment-requests/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
                 

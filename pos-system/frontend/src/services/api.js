@@ -28,8 +28,16 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+      const requestUrl = error.config?.url || '';
+      // Only redirect to login if the failure is on the auth check itself
+      // (i.e. the user's own token is invalid/expired), not on any API call
+      const isAuthCheck = requestUrl.includes('/auth/me') || requestUrl.includes('/auth/refresh');
+      if (isAuthCheck) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      }
+      // For other endpoints (e.g. customer lookup by cashier), just reject
+      // so the caller can handle the error gracefully.
     }
     return Promise.reject(error);
   }

@@ -123,6 +123,13 @@ public class AuthService {
 
             String newAccessToken = jwtUtil.generateToken(user);
 
+            String loyaltyNumber = null;
+            if (user.getRole() == Role.ROLE_CUSTOMER) {
+                loyaltyNumber = customerRepository.findByUserId(user.getId())
+                        .map(Customer::getLoyaltyNumber)
+                        .orElse(null);
+            }
+
             UserDTO userDTO = UserDTO.builder()
                     .id(user.getId())
                     .username(user.getUsername())
@@ -130,6 +137,7 @@ public class AuthService {
                     .email(user.getEmail())
                     .role(user.getRole().name().replace("ROLE_", "").toLowerCase())
                     .isActive(user.isActive())
+                    .loyaltyNumber(loyaltyNumber)
                     .build();
 
             return LoginResponse.builder()
@@ -145,6 +153,13 @@ public class AuthService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         
+        String loyaltyNumber = null;
+        if (user.getRole() == Role.ROLE_CUSTOMER) {
+            loyaltyNumber = customerRepository.findByUserId(user.getId())
+                    .map(Customer::getLoyaltyNumber)
+                    .orElse(null);
+        }
+
         return UserDTO.builder()
                 .id(user.getId())
                 .username(user.getUsername())
@@ -153,6 +168,7 @@ public class AuthService {
                 .phone(user.getPhone())
                 .role(user.getRole().name().replace("ROLE_", "").toLowerCase())
                 .isActive(user.isActive())
+                .loyaltyNumber(loyaltyNumber)
                 .lastLogin(user.getLastLogin())
                 .createdAt(user.getCreatedAt())
                 .build();

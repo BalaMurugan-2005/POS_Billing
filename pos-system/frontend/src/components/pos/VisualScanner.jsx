@@ -1,37 +1,50 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { Dialog } from '@headlessui/react';
 import { XMarkIcon, CameraIcon } from '@heroicons/react/24/outline';
 
 const VisualScanner = ({ isOpen, onClose, onScan }) => {
     const scannerRef = useRef(null);
+    const isClearedRef = useRef(false);
 
     useEffect(() => {
-        if (isOpen) {
+        if (!isOpen) return;
+
+        isClearedRef.current = false;
+
+        // Small delay to ensure the Dialog's DOM is fully rendered
+        const timeout = setTimeout(() => {
+            const element = document.getElementById('reader');
+            if (!element) return;
+
             const scanner = new Html5QrcodeScanner(
-                "reader",
-                {
-                    fps: 10,
-                    qrbox: { width: 250, height: 250 },
-                    aspectRatio: 1.0
-                },
-        /* verbose= */ false
+                'reader',
+                { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 },
+                false
             );
 
-            scanner.render((decodedText) => {
-                onScan(decodedText);
-                scanner.clear();
-                onClose();
-            }, (error) => {
-                // quiet error
-            });
+            scanner.render(
+                (decodedText) => {
+                    if (isClearedRef.current) return;
+                    isClearedRef.current = true;
+                    scanner.clear().catch(() => { });
+                    onScan(decodedText);
+                    onClose();
+                },
+                () => { /* suppress scan errors */ }
+            );
 
-            return () => {
-                scanner.clear().catch(error => {
-                    console.error("Scanner clear failed:", error);
-                });
-            };
-        }
+            scannerRef.current = scanner;
+        }, 100);
+
+        return () => {
+            clearTimeout(timeout);
+            if (scannerRef.current && !isClearedRef.current) {
+                isClearedRef.current = true;
+                scannerRef.current.clear().catch(() => { });
+                scannerRef.current = null;
+            }
+        };
     }, [isOpen]);
 
     return (
@@ -63,3 +76,4 @@ const VisualScanner = ({ isOpen, onClose, onScan }) => {
 };
 
 export default VisualScanner;
+

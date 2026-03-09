@@ -58,7 +58,10 @@ const PaymentModal = ({ isOpen, onClose, onComplete }) => {
     });
 
     try {
-      const request = await paymentRequestService.createRequest(cart.customer.id, cart.total, method);
+      // Backend createRequest expects userId (the user table ID), not the customer record ID.
+      // cart.customer.userId is set when verified via getCustomerByUserId which returns CustomerDTO.
+      const customerUserId = cart.customer.userId || cart.customer.id;
+      const request = await paymentRequestService.createRequest(customerUserId, cart.total, method);
 
       const paymentResult = await paymentRequestService.waitForPayment(request.requestId);
 
@@ -69,7 +72,8 @@ const PaymentModal = ({ isOpen, onClose, onComplete }) => {
     } catch (error) {
       setIsRequestSent(false);
       setRequestStatus('idle');
-      toast.error(error.message || 'Payment request failed', { id: loadingToastId });
+      const errMsg = error.response?.data?.message || error.message || 'Payment request failed';
+      toast.error(errMsg, { id: loadingToastId });
     }
   };
 
@@ -81,16 +85,27 @@ const PaymentModal = ({ isOpen, onClose, onComplete }) => {
 
     try {
       const transactionData = {
-        items: cart.items,
+        items: cart.items.map(item => {
+          const itemSubtotal = parseFloat((item.price * item.quantity).toFixed(2));
+          const itemTax = parseFloat(((item.taxRate || 0) * itemSubtotal / 100).toFixed(2));
+          return {
+            productId: item.productId,
+            quantity: item.quantity,
+            weight: item.weight || null,
+            price: item.price,
+            subtotal: itemSubtotal,
+            tax: itemTax,
+          };
+        }),
         subtotal: cart.subtotal,
         tax: cart.tax,
-        discount: cart.discount,
+        discount: cart.discount || 0,
         total: cart.total,
         paymentMethod: cart.paymentMethod,
         paidAmount: cart.paidAmount,
-        change: cart.change,
+        change: cart.change || 0,
+        // TransactionService does customerRepository.findById(customer.id) - needs customer table ID
         customer: cart.customer ? { id: cart.customer.id } : null,
-        timestamp: new Date().toISOString()
       };
 
       if (isOnline) {

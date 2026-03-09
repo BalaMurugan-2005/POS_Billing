@@ -16,6 +16,11 @@ export const customerService = {
         return response.data;
     },
 
+    getCustomerByUserId: async (userId) => {
+        const response = await api.get(`/customers/user/${userId}`);
+        return response.data;
+    },
+
     createCustomer: async (customerData) => {
         const response = await api.post('/customers', customerData);
         return response.data;

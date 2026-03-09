@@ -31,7 +31,10 @@ const BarcodeScanner = ({ onCheckout }) => {
             setIsVerifying(true);
             toast.loading('Loading customer profile for verification...', { id: 'verify' });
             try {
-              const customer = await customerService.getCustomerByLoyalty(data.loyaltyNumber);
+              // Try identifying by customerId (userId) first, then fallback to loyaltyNumber
+              const customer = data.customerId
+                ? await customerService.getCustomerByUserId(data.customerId)
+                : await customerService.getCustomerByLoyalty(data.loyaltyNumber);
 
               // Load product details for all items to verify
               const itemDetails = await Promise.all(
@@ -52,7 +55,15 @@ const BarcodeScanner = ({ onCheckout }) => {
               });
               toast.success('Customer profile loaded', { id: 'verify' });
             } catch (error) {
-              toast.error('Failed to verify customer profile', { id: 'verify' });
+              console.error('Customer verification error:', error);
+              const status = error.response?.status;
+              if (status === 403 || status === 401) {
+                toast.error('Access denied - cashier cannot verify this customer. Check server permissions.', { id: 'verify' });
+              } else if (status === 404) {
+                toast.error('Customer not found in database', { id: 'verify' });
+              } else {
+                toast.error('Not able to verify the customer', { id: 'verify' });
+              }
               setIsVerifying(false);
             }
             setSearchTerm('');

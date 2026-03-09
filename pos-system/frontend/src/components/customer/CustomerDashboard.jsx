@@ -97,10 +97,12 @@ const CustomerDashboard = () => {
 
       const mapped = response.map(t => ({
         id: t.transactionNumber,
-        date: new Date(t.createdAt),
-        total: t.total,
+        date: t.createdAt,
+        total: parseFloat(t.total || 0),
         items: t.items?.length || 0,
-        status: t.status.toLowerCase(),
+        paymentMethod: t.paymentMethod,
+        status: (t.status || 'completed').toLowerCase(),
+        itemDetails: t.items || [],
       }));
       setTransactions(mapped);
     } catch (error) {
@@ -205,6 +207,48 @@ const CustomerDashboard = () => {
           </button>
         </nav>
       </div>
+
+      {/* QR Tab */}
+      {
+        activeTab === 'qr' && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 text-center space-y-6">
+            <h2 className="text-2xl font-bold">Your Customer ID</h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              Show this QR code at the counter to identify yourself
+            </p>
+
+            <div className="bg-white p-6 rounded-2xl shadow-inner inline-block border-4 border-primary-500/20">
+              <QRCodeCanvas
+                id="identity-qr-canvas"
+                value={`LOY${user?.id}`} // Simple loyalty ID format
+                size={256}
+                level="M"
+                includeMargin={true}
+              />
+            </div>
+
+            <div className="max-w-xs mx-auto space-y-2">
+              <p className="font-mono text-xl font-bold tracking-widest text-primary-600">
+                {user?.loyaltyNumber || `LOY${user?.id}`}
+              </p>
+              <p className="text-sm font-medium text-gray-400 uppercase tracking-tighter">
+                Member ID
+              </p>
+            </div>
+
+            <div className="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-xl flex items-center justify-between max-w-sm mx-auto">
+              <div className="text-left">
+                <p className="text-xs text-primary-500 font-bold uppercase">Membership Tier</p>
+                <p className="text-lg font-black text-primary-700 dark:text-primary-300">BRONZE MEMBER</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-primary-500 font-bold uppercase">Available Points</p>
+                <p className="text-lg font-black text-primary-700 dark:text-primary-300">0 pts</p>
+              </div>
+            </div>
+          </div>
+        )
+      }
 
       {/* Shopping Tab */}
       {
@@ -448,8 +492,14 @@ const CustomerDashboard = () => {
       {
         activeTab === 'history' && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
               <h2 className="text-xl font-semibold">Purchase History</h2>
+              <button
+                onClick={fetchTransactionHistory}
+                className="text-sm text-primary-600 hover:underline font-medium"
+              >
+                Refresh
+              </button>
             </div>
 
             {loading ? (
@@ -457,30 +507,51 @@ const CustomerDashboard = () => {
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"></div>
               </div>
             ) : transactions.length === 0 ? (
-              <div className="p-8 text-center text-gray-500">
-                No transactions found
+              <div className="p-12 text-center text-gray-400">
+                <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <p className="font-medium">No purchase history yet</p>
+                <p className="text-sm mt-1">Complete a checkout to see your bills here</p>
               </div>
             ) : (
               <div className="divide-y divide-gray-200 dark:divide-gray-700">
                 {transactions.map((transaction) => (
-                  <div key={transaction.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <div className="flex justify-between items-start">
+                  <div key={transaction.id} className="p-6">
+                    <div className="flex justify-between items-start mb-3">
                       <div>
-                        <p className="font-medium">{transaction.id}</p>
-                        <p className="text-sm text-gray-500">
-                          {format(transaction.date, 'PPP')}
-                        </p>
+                        <p className="font-bold font-mono text-primary-600">{transaction.id}</p>
                         <p className="text-sm text-gray-500 mt-1">
-                          {transaction.items} items
+                          {transaction.date
+                            ? new Date(transaction.date).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
+                            : '—'}
+                        </p>
+                        <p className="text-xs text-gray-400 mt-0.5 capitalize">
+                          {transaction.paymentMethod || 'Cash'} • {transaction.items} item(s)
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-lg font-bold">${transaction.total.toFixed(2)}</p>
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                        <p className="text-xl font-bold text-gray-800 dark:text-white">
+                          ₹{parseFloat(transaction.total || 0).toFixed(2)}
+                        </p>
+                        <span className={`inline-flex items-center mt-1 px-2.5 py-0.5 rounded-full text-xs font-medium
+                          ${transaction.status === 'completed'
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                            : 'bg-gray-100 text-gray-600'}`}>
                           {transaction.status}
                         </span>
                       </div>
                     </div>
+                    {transaction.itemDetails && transaction.itemDetails.length > 0 && (
+                      <div className="mt-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg p-3 space-y-1">
+                        {transaction.itemDetails.map((item, idx) => (
+                          <div key={idx} className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                            <span>{item.productName} × {item.quantity}</span>
+                            <span className="font-medium">₹{parseFloat(item.subtotal || 0).toFixed(2)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
