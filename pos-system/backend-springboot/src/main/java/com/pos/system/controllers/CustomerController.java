@@ -37,7 +37,7 @@ public class CustomerController {
     }
 
     @GetMapping("/loyalty/{loyaltyNumber}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER', 'CUSTOMER')")
     public ResponseEntity<CustomerDTO> getCustomerByLoyaltyNumber(@PathVariable String loyaltyNumber) {
         return ResponseEntity.ok(customerService.getCustomerByLoyaltyNumber(loyaltyNumber));
     }

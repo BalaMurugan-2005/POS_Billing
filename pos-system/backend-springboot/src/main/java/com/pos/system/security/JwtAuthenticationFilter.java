@@ -97,9 +97,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    @org.springframework.beans.factory.annotation.Value("${DJANGO_URL:http://localhost:8000}")
-    private String djangoBaseUrl;
-
     private boolean verifyWithDjango(String token) {
         try {
             // 1. First check locally - if it's a valid Spring-signed token, trust it
@@ -108,7 +105,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             // 2. If local check fails, it might be a Django token. Verify with Django service.
-            String djangoUrl = djangoBaseUrl + "/api/auth/verify/";
+            String djangoUrl = "http://localhost:8000/api/auth/verify/";
             
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);

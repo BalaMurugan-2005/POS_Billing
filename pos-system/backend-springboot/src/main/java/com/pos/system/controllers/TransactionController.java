@@ -35,7 +35,7 @@ public class TransactionController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER', 'CUSTOMER')")
     public ResponseEntity<Page<TransactionDTO>> getAllTransactions(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
