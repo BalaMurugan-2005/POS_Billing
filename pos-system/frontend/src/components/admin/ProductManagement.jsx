@@ -40,17 +40,30 @@ const ProductManagement = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Clean and sanitize data before sending
+      const dataToSubmit = {
+        ...formData,
+        price: formData.price === '' ? 0 : parseFloat(formData.price),
+        costPrice: formData.costPrice === '' ? 0 : parseFloat(formData.costPrice),
+        taxRate: formData.taxRate === '' ? 0 : parseFloat(formData.taxRate),
+        stockQuantity: formData.stockQuantity === '' ? 0 : parseInt(formData.stockQuantity),
+        minStockLevel: formData.minStockLevel === '' ? 0 : parseInt(formData.minStockLevel),
+        pricePerKg: formData.isWeighted && formData.pricePerKg !== '' ? parseFloat(formData.pricePerKg) : null,
+      };
+
       if (editingProduct) {
-        await productService.updateProduct(editingProduct.id, formData);
+        await productService.updateProduct(editingProduct.id, dataToSubmit);
         toast.success('Product updated successfully');
       } else {
-        await productService.createProduct(formData);
+        await productService.createProduct(dataToSubmit);
         toast.success('Product created successfully');
       }
       setShowModal(false);
       fetchProducts();
     } catch (error) {
-      toast.error('Operation failed');
+      console.error('Submission error:', error);
+      const message = error.response?.data?.message || 'Operation failed';
+      toast.error(message);
     }
   };
 
@@ -140,8 +153,8 @@ const ProductManagement = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`px-2 py-1 text-xs rounded-full ${product.stockQuantity <= product.minStockLevel
-                      ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                      : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                    ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                    : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                     }`}>
                     {product.stockQuantity}
                   </span>
