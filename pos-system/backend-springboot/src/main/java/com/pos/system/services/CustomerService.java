@@ -49,11 +49,14 @@ public class CustomerService {
         return mapToDTO(customer);
     }
 
+    @org.springframework.beans.factory.annotation.Value("${DJANGO_URL:http://localhost:8000}")
+    private String djangoBaseUrl;
+
     public CustomerDTO getCustomerByLoyaltyNumber(String loyaltyNumber) {
         log.info("Fetching customer from Django service for loyalty: {}", loyaltyNumber);
         try {
             org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
-            String djangoUrl = "http://localhost:8000/api/customers/loyalty/" + loyaltyNumber + "/";
+            String djangoUrl = djangoBaseUrl + "/api/customers/loyalty/" + loyaltyNumber + "/";
             org.springframework.http.ResponseEntity<java.util.Map> response = restTemplate.getForEntity(djangoUrl, java.util.Map.class);
             
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
