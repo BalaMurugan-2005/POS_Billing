@@ -2,6 +2,7 @@ package com.pos.system.exception;
 
 import com.pos.system.dto.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,9 +20,29 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse> handleRuntimeException(RuntimeException ex) {
-        log.error("Runtime exception: ", ex);
-        ApiResponse response = new ApiResponse(false, ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        String message = ex.getMessage() != null ? ex.getMessage() : "An error occurred";
+        log.error("Runtime exception: {}", message);
+
+        // Return 404 for 'not found' cases
+        if (message.toLowerCase().contains("not found")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, message));
+        }
+        // Return 409 for duplicate/conflict cases
+        if (message.toLowerCase().contains("already exists")) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ApiResponse(false, message));
+        }
+        // Default: 400 Bad Request
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponse(false, message));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        log.error("Data integrity violation: ", ex);
+        String message = "A database constraint was violated. The record may already exist or a required field is missing.";
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(false, message));
     }
 
     @ExceptionHandler(BadCredentialsException.class)
@@ -39,7 +60,7 @@ public class GlobalExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        
+
         ApiResponse response = new ApiResponse(false, "Validation failed", errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }

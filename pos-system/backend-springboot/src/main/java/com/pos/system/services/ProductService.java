@@ -55,9 +55,20 @@ public class ProductService {
     @Transactional
     @CacheEvict(value = "products", allEntries = true)
     public ProductDTO createProduct(ProductDTO productDTO) {
+        // Validate required fields
+        if (productDTO.getName() == null || productDTO.getName().isBlank()) {
+            throw new RuntimeException("Product name is required");
+        }
+        if (productDTO.getBarcode() == null || productDTO.getBarcode().isBlank()) {
+            throw new RuntimeException("Product barcode is required");
+        }
+        if (productDTO.getPrice() == null) {
+            throw new RuntimeException("Product price is required");
+        }
+
         // Check if barcode already exists
         if (productRepository.existsByBarcode(productDTO.getBarcode())) {
-            throw new RuntimeException("Product with barcode " + productDTO.getBarcode() + " already exists");
+            throw new RuntimeException("A product with barcode '" + productDTO.getBarcode() + "' already exists. Please use a different barcode.");
         }
 
         Product product = mapToEntity(productDTO);

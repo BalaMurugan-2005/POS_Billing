@@ -46,9 +46,12 @@ public class PaymentRequestService {
     }
 
     public List<PaymentRequest> getPendingRequestsByCustomer(Long userId) {
-        Customer customer = customerRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Customer not found for user: " + userId));
-        return paymentRequestRepository.findByCustomerIdAndStatus(customer.getId(), "PENDING");
+        Optional<Customer> customerOpt = customerRepository.findByUserId(userId);
+        if (customerOpt.isEmpty()) {
+            log.warn("No customer profile found for userId: {}. Returning empty payment request list.", userId);
+            return List.of();
+        }
+        return paymentRequestRepository.findByCustomerIdAndStatus(customerOpt.get().getId(), "PENDING");
     }
 
     public Optional<PaymentRequest> getRequest(String requestId) {
