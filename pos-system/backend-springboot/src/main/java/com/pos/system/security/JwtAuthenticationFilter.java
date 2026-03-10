@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -32,6 +33,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService userDetailsService;
     private final RestTemplate restTemplate = new RestTemplate();
+    
+    @Value("${DJANGO_API_URL:http://localhost:8000}")
+    private String djangoApiUrl;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, 
@@ -105,7 +109,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             // 2. If local check fails, it might be a Django token. Verify with Django service.
-            String djangoUrl = "http://localhost:8000/api/auth/verify/";
+            String djangoUrl = djangoApiUrl + "/api/auth/verify/";
             
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);

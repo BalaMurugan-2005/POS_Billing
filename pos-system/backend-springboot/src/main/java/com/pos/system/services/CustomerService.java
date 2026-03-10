@@ -12,6 +12,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -49,11 +50,14 @@ public class CustomerService {
         return mapToDTO(customer);
     }
 
+    @Value("${DJANGO_API_URL:http://localhost:8000}")
+    private String djangoApiUrl;
+
     public CustomerDTO getCustomerByLoyaltyNumber(String loyaltyNumber) {
         log.info("Fetching customer from Django service for loyalty: {}", loyaltyNumber);
         try {
             org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
-            String djangoUrl = "http://localhost:8000/api/customers/loyalty/" + loyaltyNumber + "/";
+            String djangoUrl = djangoApiUrl + "/api/customers/loyalty/" + loyaltyNumber + "/";
             org.springframework.http.ResponseEntity<java.util.Map> response = restTemplate.getForEntity(djangoUrl, java.util.Map.class);
             
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
