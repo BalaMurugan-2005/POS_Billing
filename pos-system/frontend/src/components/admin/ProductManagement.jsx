@@ -40,15 +40,24 @@ const ProductManagement = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Clean and sanitize data before sending
+      // Ensure numeric values are actually numbers and not empty strings or NaN
       const dataToSubmit = {
-        ...formData,
-        price: formData.price === '' ? 0 : parseFloat(formData.price),
-        costPrice: formData.costPrice === '' ? 0 : parseFloat(formData.costPrice),
-        taxRate: formData.taxRate === '' ? 0 : parseFloat(formData.taxRate),
-        stockQuantity: formData.stockQuantity === '' ? 0 : parseInt(formData.stockQuantity),
-        minStockLevel: formData.minStockLevel === '' ? 0 : parseInt(formData.minStockLevel),
-        pricePerKg: formData.isWeighted && formData.pricePerKg !== '' ? parseFloat(formData.pricePerKg) : null,
+        name: formData.name,
+        barcode: formData.barcode,
+        category: formData.category,
+        description: formData.description || '',
+        brand: formData.brand || '',
+        unit: formData.unit || 'pcs',
+        price: parseFloat(formData.price) || 0,
+        costPrice: parseFloat(formData.costPrice) || 0,
+        taxRate: parseFloat(formData.taxRate) || 0,
+        stockQuantity: parseInt(formData.stockQuantity) || 0,
+        minStockLevel: parseInt(formData.minStockLevel) || 0,
+        maxStockLevel: parseInt(formData.maxStockLevel) || 100,
+        isWeighted: !!formData.isWeighted,
+        pricePerKg: formData.isWeighted ? (parseFloat(formData.pricePerKg) || 0) : null,
+        imageUrl: formData.imageUrl || '',
+        isActive: formData.isActive !== undefined ? formData.isActive : true
       };
 
       if (editingProduct) {
@@ -62,7 +71,7 @@ const ProductManagement = () => {
       fetchProducts();
     } catch (error) {
       console.error('Submission error:', error);
-      const message = error.response?.data?.message || 'Operation failed';
+      const message = error.response?.data?.message || error.message || 'Operation failed';
       toast.error(message);
     }
   };
