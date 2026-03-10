@@ -48,14 +48,14 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll()
                 
                 // Role-based endpoints
-                .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                .requestMatchers("/cashier/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER")
-                // CASHIER needs /customers/** to look up customer profiles during QR scan
-                .requestMatchers("/customers/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
-                .requestMatchers("/customer/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
-                .requestMatchers("/products/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
-                .requestMatchers("/transactions/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
-                .requestMatchers("/payment-requests/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
+                .requestMatchers("/admin", "/admin/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/cashier", "/cashier/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER")
+                // CASHIER needs /customers to look up customer profiles during QR scan
+                .requestMatchers("/customers", "/customers/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
+                .requestMatchers("/customer", "/customer/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
+                .requestMatchers("/products", "/products/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
+                .requestMatchers("/transactions", "/transactions/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
+                .requestMatchers("/payment-requests", "/payment-requests/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CASHIER", "ROLE_CUSTOMER")
                 
                 // All other endpoints require authentication
                 .anyRequest().authenticated()

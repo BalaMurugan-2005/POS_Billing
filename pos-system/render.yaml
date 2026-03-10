@@ -64,16 +64,15 @@ services:
   # ─────────────────────────────────────────────────────────────────────────
   # 3. React Frontend (Static Site)
   # ─────────────────────────────────────────────────────────────────────────
-  - type: web
+  - type: static_site
     name: pos-frontend
-    runtime: static
     rootDir: pos-system/frontend
     buildCommand: npm install && chmod +x node_modules/.bin/vite && npm run build
     staticPublishPath: dist
     plan: free
     envVars:
       - key: VITE_API_URL
-        value: https://pos-springboot.onrender.com/api
+        value: https://pos-springboot-qr0d.onrender.com/api
       - key: VITE_DJANGO_URL
         value: https://pos-billing-bjyl.onrender.com
     routes:
