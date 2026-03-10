@@ -85,9 +85,43 @@ public class CustomerService {
     }
 
     public CustomerDTO getCustomerByUserId(Long userId) {
-        Customer customer = customerRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Customer not found for user: " + userId));
-        return mapToDTO(customer);
+        // First, try to find the customer in the local Spring Boot database
+        var localCustomer = customerRepository.findByUserId(userId);
+        if (localCustomer.isPresent()) {
+            return mapToDTO(localCustomer.get());
+        }
+        
+        // If not found locally, try to fetch from Django service
+        // This handles the case where the QR code contains a Django user ID
+        log.info("Customer not found locally for userId: {}, attempting to fetch from Django", userId);
+        try {
+            org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+            String djangoUrl = djangoApiUrl + "/api/customers/user/" + userId + "/";
+            org.springframework.http.ResponseEntity<java.util.Map> response = restTemplate.getForEntity(djangoUrl, java.util.Map.class);
+            
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                java.util.Map<String, Object> body = response.getBody();
+                CustomerDTO dto = new CustomerDTO();
+                dto.setId(Long.valueOf(body.get("id").toString()));
+                
+                java.util.Map<String, Object> userDict = (java.util.Map<String, Object>) body.get("user");
+                if (userDict != null) {
+                    dto.setEmail((String) userDict.get("email"));
+                    dto.setName(userDict.get("first_name") + " " + userDict.get("last_name"));
+                }
+                dto.setLoyaltyNumber((String) body.get("loyalty_number"));
+                dto.setTier((String) body.get("tier"));
+                dto.setLoyaltyPoints(((Number) body.get("loyalty_points")).longValue());
+                
+                log.info("Successfully fetched customer from Django for userId: {}", userId);
+                return dto;
+            }
+        } catch (Exception e) {
+            log.warn("Failed to fetch customer from Django for userId {}: {}", userId, e.getMessage());
+        }
+        
+        // If still not found, throw exception
+        throw new RuntimeException("Customer not found for user: " + userId);
     }
 
     public List<CustomerDTO> getCustomersByTier(String tier) {

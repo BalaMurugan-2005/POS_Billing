@@ -260,6 +260,17 @@ class CustomerByLoyaltyView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'loyalty_number'
 
+class CustomerByUserIdView(generics.RetrieveAPIView):
+    """Get customer by user ID"""
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'user_id'
+    lookup_url_kwarg = 'user_id'
+    
+    def get_queryset(self):
+        return Customer.objects.filter(user_id=self.kwargs.get('user_id'))
+
 class AddLoyaltyPointsView(APIView):
     """Add loyalty points to customer"""
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]

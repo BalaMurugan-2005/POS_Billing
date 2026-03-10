@@ -31,6 +31,7 @@ urlpatterns = [
     # Customers
     path('customers/', views.CustomerListView.as_view(), name='customer-list'),
     path('customers/loyalty/<str:loyalty_number>/', views.CustomerByLoyaltyView.as_view(), name='customer-loyalty'),
+    path('customers/user/<int:user_id>/', views.CustomerByUserIdView.as_view(), name='customer-by-user'),
     path('customers/<int:pk>/', views.CustomerDetailView.as_view(), name='customer-detail'),
     path('customers/<int:pk>/add-points/', views.AddLoyaltyPointsView.as_view(), name='customer-add-points'),
 ]
