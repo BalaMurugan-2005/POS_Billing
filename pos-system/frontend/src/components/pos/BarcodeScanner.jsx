@@ -32,9 +32,24 @@ const BarcodeScanner = ({ onCheckout }) => {
             toast.loading('Loading customer profile for verification...', { id: 'verify' });
             try {
               // Try identifying by customerId (userId) first, then fallback to loyaltyNumber
-              const customer = data.customerId
-                ? await customerService.getCustomerByUserId(data.customerId)
-                : await customerService.getCustomerByLoyalty(data.loyaltyNumber);
+              let customer;
+              try {
+                customer = data.customerId
+                  ? await customerService.getCustomerByUserId(data.customerId)
+                  : await customerService.getCustomerByLoyalty(data.loyaltyNumber);
+              } catch (err) {
+                // Cashiers/Admins scanning their own testing QR won't have a Customer profile.
+                // Fallback to the basic info encoded in the QR.
+                console.warn('Customer profile not found on server, using QR data fallback');
+                customer = {
+                  id: data.customerId || null,
+                  userId: data.customerId || null,
+                  name: data.name || 'Walk-in Customer',
+                  loyaltyNumber: data.loyaltyNumber || 'N/A',
+                  loyaltyPoints: 0,
+                  tier: 'NONE'
+                };
+              }
 
               // Load product details for all items to verify
               const itemDetails = await Promise.all(

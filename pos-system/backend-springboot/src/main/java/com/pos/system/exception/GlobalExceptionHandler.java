@@ -20,8 +20,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse> handleRuntimeException(RuntimeException ex) {
-        String message = ex.getMessage() != null ? ex.getMessage() : "An error occurred";
-        log.error("Runtime exception: {}", message);
+        String message = ex.getMessage() != null ? ex.getMessage() : "An unexpected error occurred (" + ex.getClass().getSimpleName() + ")";
+        log.error("Runtime exception: ", ex);
 
         // Return 404 for 'not found' cases
         if (message.toLowerCase().contains("not found")) {
@@ -33,8 +33,15 @@ public class GlobalExceptionHandler {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ApiResponse(false, message));
         }
-        // Default: 400 Bad Request
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        
+        // Return 400 for explicit bad request or validation messages
+        if (message.toLowerCase().contains("required") || message.toLowerCase().contains("invalid")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, message));
+        }
+
+        // Default: 500 Internal Server Error for null pointers and backend crashes
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ApiResponse(false, message));
     }
 
@@ -52,6 +59,13 @@ public class GlobalExceptionHandler {
             userMessage = "A database constraint was violated: " + cause;
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(false, userMessage));
+    }
+
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity<ApiResponse> handleAccessDeniedException(org.springframework.security.access.AccessDeniedException ex) {
+        log.error("Access denied: ", ex);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ApiResponse(false, "You do not have permission to access this resource"));
     }
 
     @ExceptionHandler(BadCredentialsException.class)
