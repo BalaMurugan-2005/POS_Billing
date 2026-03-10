@@ -8,13 +8,16 @@ import com.pos.system.repositories.PaymentRequestRepository;
 import com.pos.system.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.List;
-
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -25,13 +28,52 @@ public class PaymentRequestService {
     private final PaymentRequestRepository paymentRequestRepository;
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
+    
+    @Value("${DJANGO_API_URL:http://localhost:8000}")
+    private String djangoApiUrl;
 
     @Transactional
     public PaymentRequest createRequest(Long userId, BigDecimal amount, String method) {
         User cashier = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Customer customer = customerRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Customer not found for user: " + userId));
-
+        
+        // Try to find customer locally first
+        var customerOpt = customerRepository.findByUserId(userId);
+        Customer customer = null;
+        
+        if (customerOpt.isPresent()) {
+            customer = customerOpt.get();
+        } else {
+            // If not found locally, try to fetch from Django and create a local record
+            log.info("Customer not found locally for userId: {}, attempting to fetch from Django", userId);
+            try {
+                RestTemplate restTemplate = new RestTemplate();
+                String djangoUrl = djangoApiUrl + "/api/customers/user/" + userId + "/";
+                ResponseEntity<Map> response = restTemplate.getForEntity(djangoUrl, Map.class);
+                
+                if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                    Map<String, Object> body = response.getBody();
+                    // Create a new customer record with data from Django
+                    customer = Customer.builder()
+                            .loyaltyNumber((String) body.get("loyalty_number"))
+                            .tier((String) body.get("tier"))
+                            .loyaltyPoints(new BigDecimal(body.get("loyalty_points").toString()))
+                            .build();
+                    
+                    // Create a User reference with the Django user ID
+                    User user = new User();
+                    user.setId(userId);
+                    customer.setUser(user);
+                    
+                    // Save the new customer locally
+                    customer = customerRepository.save(customer);
+                    log.info("Created local customer record from Django data for userId: {}", userId);
+                }
+            } catch (Exception e) {
+                log.warn("Failed to fetch customer from Django for userId {}: {}", userId, e.getMessage());
+            }
+        }
+        
+        // Allow payment requests even if customer is null (walk-in customer scenario)
         PaymentRequest request = PaymentRequest.builder()
                 .customer(customer)
                 .cashier(cashier)
