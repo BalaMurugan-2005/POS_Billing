@@ -27,13 +27,10 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      const requestUrl = error.config?.url || '';
-      // Only redirect to login if the user's own token is invalid/expired
-      const isAuthCheck = requestUrl.includes('/auth/me') || requestUrl.includes('/auth/refresh');
-      if (isAuthCheck) {
-        localStorage.removeItem('token');
-        window.location.href = '/login';
-      }
+      // Token is invalid or expired
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }
