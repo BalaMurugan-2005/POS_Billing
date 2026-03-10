@@ -34,6 +34,7 @@ public class Transaction {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @Builder.Default
     @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<TransactionItem> items = new ArrayList<>();
 

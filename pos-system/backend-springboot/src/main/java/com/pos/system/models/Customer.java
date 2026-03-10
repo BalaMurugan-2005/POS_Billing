@@ -28,6 +28,7 @@ public class Customer {
     @Column(unique = true)
     private String loyaltyNumber;
 
+    @Builder.Default
     private BigDecimal loyaltyPoints = BigDecimal.ZERO;
 
     private String tier; // Bronze, Silver, Gold, Platinum

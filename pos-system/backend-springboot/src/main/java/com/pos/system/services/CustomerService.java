@@ -111,7 +111,8 @@ public class CustomerService {
                 }
                 dto.setLoyaltyNumber((String) body.get("loyalty_number"));
                 dto.setTier((String) body.get("tier"));
-                dto.setLoyaltyPoints(((Number) body.get("loyalty_points")).longValue());
+                Number loyaltyPoints = (Number) body.get("loyalty_points");
+                dto.setLoyaltyPoints(loyaltyPoints != null ? new BigDecimal(loyaltyPoints.toString()) : BigDecimal.ZERO);
                 
                 log.info("Successfully fetched customer from Django for userId: {}", userId);
                 return dto;

@@ -48,6 +48,7 @@ public class User implements UserDetails {
     @Column(name = "profile_picture")
     private String profilePicture;
 
+    @Builder.Default
     @Column(name = "is_active")
     private boolean isActive = true;
 
