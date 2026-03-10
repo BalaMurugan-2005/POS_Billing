@@ -40,9 +40,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        log.error("Data integrity violation: ", ex);
-        String message = "A database constraint was violated. The record may already exist or a required field is missing.";
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(false, message));
+        String cause = ex.getMostSpecificCause().getMessage();
+        log.error("Data integrity violation: {}", cause);
+
+        String userMessage;
+        if (cause != null && cause.toLowerCase().contains("unique")) {
+            userMessage = "A record with this value already exists. Please use a unique barcode or identifier.";
+        } else if (cause != null && cause.toLowerCase().contains("null")) {
+            userMessage = "A required field is missing. Please fill in all required fields.";
+        } else {
+            userMessage = "A database constraint was violated: " + cause;
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(false, userMessage));
     }
 
     @ExceptionHandler(BadCredentialsException.class)

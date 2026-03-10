@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Builder.Default;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -54,6 +55,7 @@ public class Product {
     private String unit;
 
     @Column(name = "is_weighted")
+    @Default
     private Boolean isWeighted = false;
 
     @Column(name = "price_per_kg")
@@ -63,6 +65,7 @@ public class Product {
     private String imageUrl;
 
     @Column(name = "is_active")
+    @Default
     private Boolean isActive = true;
 
     @Column(name = "created_at")
