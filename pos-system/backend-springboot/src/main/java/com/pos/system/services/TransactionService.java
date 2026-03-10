@@ -159,11 +159,9 @@ public class TransactionService {
                 .collect(Collectors.toList());
     }
 
-    public List<TransactionDTO> getTransactionsByCustomer(Long userId) {
-        Customer customer = customerRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Customer not found for user: " + userId));
-        
-        return transactionRepository.findByCustomerId(customer.getId())
+    public List<TransactionDTO> getTransactionsByCustomer(Long customerId) {
+        // customerId is the actual customer record ID, not userId
+        return transactionRepository.findByCustomerId(customerId)
                 .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
