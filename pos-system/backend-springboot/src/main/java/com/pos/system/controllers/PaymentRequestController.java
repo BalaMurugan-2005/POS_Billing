@@ -28,6 +28,12 @@ public class PaymentRequestController {
         return ResponseEntity.ok(paymentRequestService.createRequest(customerId, amount, method));
     }
 
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER')")
+    public ResponseEntity<List<PaymentRequest>> getAllPaymentRequests() {
+        return ResponseEntity.ok(paymentRequestService.getAllPendingRequests());
+    }
+
     @GetMapping("/active/{customerId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER', 'CUSTOMER')")
     public ResponseEntity<List<PaymentRequest>> getActiveRequests(@PathVariable Long customerId) {

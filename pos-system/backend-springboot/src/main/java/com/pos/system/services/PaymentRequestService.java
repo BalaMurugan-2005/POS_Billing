@@ -54,6 +54,13 @@ public class PaymentRequestService {
         return paymentRequestRepository.findByCustomerIdAndStatus(customerOpt.get().getId(), "PENDING");
     }
 
+    public List<PaymentRequest> getAllPendingRequests() {
+        return paymentRequestRepository.findAll()
+                .stream()
+                .filter(r -> "PENDING".equals(r.getStatus()))
+                .toList();
+    }
+
     public Optional<PaymentRequest> getRequest(String requestId) {
         return paymentRequestRepository.findByRequestId(requestId);
     }

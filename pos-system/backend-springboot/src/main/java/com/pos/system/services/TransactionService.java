@@ -50,6 +50,11 @@ public class TransactionService {
         transaction.setPaidAmount(transactionDTO.getPaidAmount());
         transaction.setChange(transactionDTO.getChange());
         transaction.setStatus("COMPLETED");
+        
+        // Generate unique transaction number: TXN-<timestamp>-<random>
+        String transactionNumber = "TXN-" + System.currentTimeMillis() + "-" + 
+                (int)(Math.random() * 10000);
+        transaction.setTransactionNumber(transactionNumber);
 
         // Set customer if provided
         if (transactionDTO.getCustomer() != null && transactionDTO.getCustomer().getId() != null) {
