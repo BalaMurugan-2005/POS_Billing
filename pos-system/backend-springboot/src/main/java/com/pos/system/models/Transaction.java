@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "transactions")
@@ -80,6 +81,7 @@ public class Transaction {
     }
 
     private String generateTransactionNumber() {
-        return "TXN" + System.currentTimeMillis();
+        // Use UUID for guaranteed uniqueness instead of timestamp
+        return "TXN-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 }

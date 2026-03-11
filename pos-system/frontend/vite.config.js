@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => {
                     manualChunks: {
                         vendor: ['react', 'react-dom', 'react-router-dom'],
                         charts: ['recharts'],
+                        toast: ['react-hot-toast'],
                     }
                 }
             }

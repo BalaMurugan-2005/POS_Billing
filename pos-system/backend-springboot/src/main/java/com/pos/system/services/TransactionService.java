@@ -19,6 +19,7 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,9 +52,8 @@ public class TransactionService {
         transaction.setChange(transactionDTO.getChange());
         transaction.setStatus("COMPLETED");
         
-        // Generate unique transaction number: TXN-<timestamp>-<random>
-        String transactionNumber = "TXN-" + System.currentTimeMillis() + "-" + 
-                (int)(Math.random() * 10000);
+        // Generate unique transaction number: TXN-<uuid>
+        String transactionNumber = "TXN-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         transaction.setTransactionNumber(transactionNumber);
 
         // Set customer if provided

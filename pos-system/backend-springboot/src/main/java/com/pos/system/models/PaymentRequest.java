@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "payment_requests")
@@ -49,7 +50,8 @@ public class PaymentRequest {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
         if (requestId == null) {
-            requestId = "PAY-" + System.currentTimeMillis();
+            // Use UUID for guaranteed uniqueness
+            requestId = "PAY-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         }
         if (status == null) {
             status = "PENDING";

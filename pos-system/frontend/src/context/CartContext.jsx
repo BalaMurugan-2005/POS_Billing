@@ -116,7 +116,7 @@ export const CartProvider = ({ children }) => {
 
   const removeCustomer = () => {
     setCart(prev => ({ ...prev, customer: null }));
-    toast.info('Customer removed');
+    toast('Customer removed', { icon: 'ℹ️' });
   };
 
   const processPayment = (paymentMethod, paidAmount) => {
