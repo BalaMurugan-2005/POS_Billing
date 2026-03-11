@@ -27,9 +27,11 @@ public class Inventory {
     @Column(name = "quantity_change")
     private Integer quantityChange;
 
+    @Column(name = "movement_type")
     private String type; // SALE, PURCHASE, ADJUSTMENT, RETURN
 
-    private String reason;
+    @Builder.Default
+    private String reason = "";
 
     @Column(name = "previous_quantity")
     private Integer previousQuantity;
@@ -40,6 +42,13 @@ public class Inventory {
     @ManyToOne
     @JoinColumn(name = "performed_by")
     private User performedBy;
+
+    @Builder.Default
+    @Column(name = "reference_number")
+    private String referenceNumber = "";
+
+    @Builder.Default
+    private String notes = "";
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

@@ -52,7 +52,7 @@ public class Transaction {
     @Column(name = "paid_amount")
     private BigDecimal paidAmount;
 
-    @Column(name = "amount_change")
+    @Column(name = "change_amount")
     private BigDecimal change;
 
     private String status; // COMPLETED, VOID, REFUNDED
@@ -61,13 +61,22 @@ public class Transaction {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
         if (transactionNumber == null) {
             transactionNumber = generateTransactionNumber();
         }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 
     private String generateTransactionNumber() {

@@ -105,8 +105,9 @@ public class TransactionService {
             Inventory inventory = new Inventory();
             inventory.setProduct(product);
             inventory.setQuantityChange(-itemDTO.getQuantity());
-            inventory.setType("SALE");
+            inventory.setType("sale");
             inventory.setReason("Transaction: " + transaction.getTransactionNumber());
+            inventory.setReferenceNumber(transaction.getTransactionNumber());
             inventory.setPreviousQuantity(product.getStockQuantity() + itemDTO.getQuantity());
             inventory.setNewQuantity(product.getStockQuantity());
             inventory.setPerformedBy(cashier);
@@ -186,8 +187,9 @@ public class TransactionService {
             Inventory inventory = new Inventory();
             inventory.setProduct(product);
             inventory.setQuantityChange(item.getQuantity());
-            inventory.setType("RETURN");
+            inventory.setType("return");
             inventory.setReason("Void transaction: " + transaction.getTransactionNumber() + " - " + reason);
+            inventory.setReferenceNumber(transaction.getTransactionNumber());
             inventory.setPreviousQuantity(product.getStockQuantity() - item.getQuantity());
             inventory.setNewQuantity(product.getStockQuantity());
             inventory.setPerformedBy((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
