@@ -22,15 +22,27 @@ api.interceptors.request.use(
   }
 );
 
+// Track if a redirect is already in progress to avoid redirect loops
+// caused by background polling (e.g., payment-requests polling every 3s)
+let isRedirectingToLogin = false;
+
 // Response interceptor for error handling
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token is invalid or expired
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
+      // Only redirect once even if multiple concurrent requests fail
+      if (!isRedirectingToLogin) {
+        isRedirectingToLogin = true;
+        // Token is invalid or expired — clear auth state
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        // Small delay to let in-flight requests settle before navigating
+        setTimeout(() => {
+          window.location.href = '/login';
+          isRedirectingToLogin = false;
+        }, 300);
+      }
     }
     return Promise.reject(error);
   }

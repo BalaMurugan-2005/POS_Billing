@@ -36,9 +36,12 @@ const CustomerDashboard = () => {
   useEffect(() => {
     if (!user?.id) return;
 
+    let active = true; // flag to stop polling after unmount or 401
+
     const pollPaymentRequests = async () => {
       try {
         const requests = await paymentRequestService.getActiveRequests(user.id);
+        if (!active) return;
         if (requests.length > 0 && !paymentRequest) {
           const latest = requests[0];
           setPaymentRequest(latest);
@@ -49,12 +52,21 @@ const CustomerDashboard = () => {
           });
         }
       } catch (error) {
+        if (error?.response?.status === 401) {
+          // Stop polling silently — api.js will handle the redirect
+          active = false;
+          clearInterval(interval);
+          return;
+        }
         console.error('Failed to poll payment requests:', error);
       }
     };
 
     const interval = setInterval(pollPaymentRequests, 3000);
-    return () => clearInterval(interval);
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
   }, [user, paymentRequest]);
 
   // Handle automatic history reflection (Poll every 10 seconds if active)

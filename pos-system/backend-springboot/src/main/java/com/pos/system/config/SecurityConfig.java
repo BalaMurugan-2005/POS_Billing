@@ -45,6 +45,7 @@ public class SecurityConfig {
                 // Public endpoints
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/public/**").permitAll()
+                .requestMatchers("/error").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 
                 // Role-based endpoints
