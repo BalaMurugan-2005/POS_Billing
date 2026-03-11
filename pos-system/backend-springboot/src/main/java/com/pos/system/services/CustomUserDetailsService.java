@@ -18,8 +18,20 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        return userRepository.findByUsername(username).orElseGet(() -> {
+            // Fallback: If it's pure numbers, it might be a Django user_id claim
+            if (username.matches("\\d+")) {
+                return userRepository.findById(Long.parseLong(username))
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found with username or id: " + username));
+            }
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        });
+    }
+
+    @Transactional
+    public UserDetails loadUserById(Long id) throws UsernameNotFoundException {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
 
         return user;
     }

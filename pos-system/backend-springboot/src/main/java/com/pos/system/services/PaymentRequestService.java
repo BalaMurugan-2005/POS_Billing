@@ -60,9 +60,9 @@ public class PaymentRequestService {
                             .build();
                     
                     // Create a User reference with the Django user ID
-                    User user = new User();
-                    user.setId(userId);
-                    customer.setUser(user);
+                    User userRef = new User();
+                    userRef.setId(userId);
+                    customer.setUser(userRef);
                     
                     // Save the new customer locally
                     customer = customerRepository.save(customer);
@@ -70,6 +70,19 @@ public class PaymentRequestService {
                 }
             } catch (Exception e) {
                 log.warn("Failed to fetch customer from Django for userId {}: {}", userId, e.getMessage());
+                // Fallback: create a basic customer profile so the PaymentRequest isn't orphaned
+                User existingUser = userRepository.findById(userId).orElse(null);
+                if (existingUser != null) {
+                    log.info("Creating a basic fallback customer profile for existing user ID: {}", userId);
+                    customer = Customer.builder()
+                            .user(existingUser)
+                            .tier("bronze")
+                            .loyaltyPoints(BigDecimal.ZERO)
+                            .build();
+                    customer = customerRepository.save(customer);
+                } else {
+                    log.warn("Cannot create fallback customer profile: User ID {} does not exist in DB", userId);
+                }
             }
         }
         

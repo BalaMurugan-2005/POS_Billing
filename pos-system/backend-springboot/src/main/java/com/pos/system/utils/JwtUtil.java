@@ -74,7 +74,17 @@ public class JwtUtil {
     }
 
     public String getUsernameFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
+        Claims claims = getAllClaimsFromToken(token);
+        String subject = claims.getSubject();
+        if (subject != null) {
+            return subject;
+        }
+        
+        // Handle Django tokens (uses user_id)
+        if (claims.containsKey("user_id")) {
+            return claims.get("user_id").toString();
+        }
+        return null;
     }
 
     public Date getExpirationDateFromToken(String token) {
