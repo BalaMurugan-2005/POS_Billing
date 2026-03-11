@@ -79,16 +79,24 @@ class VerifyTokenView(APIView):
             role_names = [r.get('authority', '') if isinstance(r, dict) else r for r in roles]
             
             # Check user role exists
+            user_id = decoded.get('user_id')
             username = decoded.get('sub')
             try:
-                user_obj = User.objects.get(username=username)
+                if user_id:
+                    user_obj = User.objects.get(id=user_id)
+                elif username:
+                    user_obj = User.objects.get(username=username)
+                else:
+                    raise User.DoesNotExist
+                
                 user_role = user_obj.role
+                resolved_username = user_obj.username
             except User.DoesNotExist:
-                user_role = None
+                return Response({'valid': False, 'error': 'User not found'}, status=status.HTTP_401_UNAUTHORIZED)
 
             return Response({
                 'valid': True,
-                'username': username,
+                'username': resolved_username,
                 'roles': role_names,
                 'user_role': user_role
             })
