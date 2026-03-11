@@ -66,8 +66,9 @@ class VerifyTokenView(APIView):
         if not token:
             return Response({'valid': False, 'error': 'Token not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Spring Boot jwt secret from application.properties
-        secret = 'mySecretKeyForJWTTokenGenerationAndValidation2024POSSystem'
+        # Use the same secret as Spring Boot — read from settings (JWT_SECRET_KEY env var)
+        from django.conf import settings as django_settings
+        secret = django_settings.SIMPLE_JWT.get('SIGNING_KEY', '')
 
         try:
             # Verify validity and expiry

@@ -96,7 +96,10 @@ public class User implements UserDetails {
     // UserDetails implementation
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        // Role enum values already contain the ROLE_ prefix (e.g. ROLE_CUSTOMER).
+        // Do NOT prepend "ROLE_" again — that would produce "ROLE_ROLE_CUSTOMER"
+        // which would never match Spring Security's hasRole / hasAuthority checks.
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override

@@ -52,8 +52,8 @@ const CustomerDashboard = () => {
           });
         }
       } catch (error) {
-        if (error?.response?.status === 401) {
-          // Stop polling silently — api.js will handle the redirect
+        if (error?.response?.status === 401 || error?.response?.status === 403) {
+          // Stop polling silently — api.js will handle the redirect for 401
           active = false;
           clearInterval(interval);
           return;
