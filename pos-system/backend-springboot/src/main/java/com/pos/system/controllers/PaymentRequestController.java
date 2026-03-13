@@ -29,7 +29,7 @@ public class PaymentRequestController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CASHIER')")
     public ResponseEntity<List<PaymentRequest>> getAllPaymentRequests() {
         return ResponseEntity.ok(paymentRequestService.getAllPendingRequests());
     }
