@@ -86,8 +86,11 @@ public class PaymentRequestService {
             }
         }
         
-        // Allow payment requests even if customer is null (walk-in customer scenario)
+        // Generate requestId here with full UUID to guarantee uniqueness even under concurrency
+        String requestId = "PAY-" + java.util.UUID.randomUUID().toString().toUpperCase().replace("-", "");
+        
         PaymentRequest request = PaymentRequest.builder()
+                .requestId(requestId)
                 .customer(customer)
                 .cashier(cashier)
                 .amount(amount)

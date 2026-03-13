@@ -50,8 +50,8 @@ public class PaymentRequest {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
         if (requestId == null) {
-            // Use UUID for guaranteed uniqueness
-            requestId = "PAY-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+            // Use full UUID for guaranteed uniqueness — NO partial substring
+            requestId = "PAY-" + UUID.randomUUID().toString().toUpperCase().replace("-", "");
         }
         if (status == null) {
             status = "PENDING";
