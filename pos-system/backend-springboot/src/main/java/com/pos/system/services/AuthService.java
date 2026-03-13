@@ -151,6 +151,9 @@ public class AuthService {
 
     public UserDTO getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new RuntimeException("User not authenticated");
+        }
         User user = (User) authentication.getPrincipal();
         
         String loyaltyNumber = null;
