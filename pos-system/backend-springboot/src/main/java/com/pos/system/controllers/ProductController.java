@@ -49,25 +49,25 @@ public class ProductController {
     }
 
     @GetMapping("/low-stock")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<ProductDTO>> getLowStockProducts() {
         return ResponseEntity.ok(productService.getLowStockProducts());
     }
 
     @GetMapping("/out-of-stock")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<ProductDTO>> getOutOfStockProducts() {
         return ResponseEntity.ok(productService.getOutOfStockProducts());
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO) {
         return ResponseEntity.ok(productService.createProduct(productDTO));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ProductDTO> updateProduct(
             @PathVariable Long id,
             @Valid @RequestBody ProductDTO productDTO) {
@@ -76,7 +76,7 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}/stock")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CASHIER')")
     public ResponseEntity<ProductDTO> updateStock(
             @PathVariable Long id,
             @RequestParam Integer quantity,
@@ -86,7 +86,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok(new ApiResponse(true, "Product deleted successfully"));

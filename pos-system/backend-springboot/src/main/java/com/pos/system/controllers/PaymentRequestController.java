@@ -19,7 +19,7 @@ public class PaymentRequestController {
     private final PaymentRequestService paymentRequestService;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CASHIER')")
     public ResponseEntity<PaymentRequest> createRequest(@RequestBody Map<String, Object> payload) {
         Long customerId = Long.valueOf(payload.get("customerId").toString());
         BigDecimal amount = new BigDecimal(payload.get("amount").toString());
@@ -35,20 +35,20 @@ public class PaymentRequestController {
     }
 
     @GetMapping("/active/{customerId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER', 'CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CASHIER', 'ROLE_CUSTOMER')")
     public ResponseEntity<List<PaymentRequest>> getActiveRequests(@PathVariable Long customerId) {
         return ResponseEntity.ok(paymentRequestService.getPendingRequestsByCustomer(customerId));
     }
 
     @GetMapping("/{requestId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER', 'CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CASHIER', 'ROLE_CUSTOMER')")
     public ResponseEntity<PaymentRequest> getRequest(@PathVariable String requestId) {
         return ResponseEntity.ok(paymentRequestService.getRequest(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found")));
     }
 
     @PostMapping("/{requestId}/status")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER', 'CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CASHIER', 'ROLE_CUSTOMER')")
     public ResponseEntity<PaymentRequest> updateStatus(
             @PathVariable String requestId,
             @RequestBody Map<String, String> payload) {

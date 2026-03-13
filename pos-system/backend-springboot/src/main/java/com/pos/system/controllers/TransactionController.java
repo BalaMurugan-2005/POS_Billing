@@ -23,19 +23,19 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CASHIER')")
     public ResponseEntity<TransactionDTO> createTransaction(@Valid @RequestBody TransactionDTO transactionDTO) {
         return ResponseEntity.ok(transactionService.createTransaction(transactionDTO));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CASHIER')")
     public ResponseEntity<TransactionDTO> getTransactionById(@PathVariable Long id) {
         return ResponseEntity.ok(transactionService.getTransactionById(id));
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER', 'CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CASHIER', 'ROLE_CUSTOMER')")
     public ResponseEntity<Page<TransactionDTO>> getAllTransactions(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
@@ -46,7 +46,7 @@ public class TransactionController {
     }
 
     @GetMapping("/range")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<TransactionDTO>> getTransactionsByDateRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
@@ -55,7 +55,7 @@ public class TransactionController {
     }
 
     @PostMapping("/{id}/void")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CASHIER')")
     public ResponseEntity<TransactionDTO> voidTransaction(
             @PathVariable Long id,
             @RequestParam String reason) {
@@ -64,7 +64,7 @@ public class TransactionController {
     }
 
     @PostMapping("/{id}/receipt")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CASHIER')")
     public ResponseEntity<ApiResponse> sendReceipt(
             @PathVariable Long id,
             @RequestBody java.util.Map<String, String> payload) {
@@ -74,13 +74,13 @@ public class TransactionController {
     }
 
     @GetMapping("/customer/{customerId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER', 'CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CASHIER', 'ROLE_CUSTOMER')")
     public ResponseEntity<List<TransactionDTO>> getTransactionsByCustomer(@PathVariable Long customerId) {
         return ResponseEntity.ok(transactionService.getTransactionsByCustomer(customerId));
     }
 
     @GetMapping("/stats/today")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CASHIER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CASHIER')")
     public ResponseEntity<?> getTodayStats() {
         return ResponseEntity.ok(new Object() {
             public final BigDecimal sales = transactionService.getTodaySales();
