@@ -47,9 +47,16 @@ public class TransactionService {
         transaction.setTax(transactionDTO.getTax());
         transaction.setDiscount(transactionDTO.getDiscount());
         transaction.setTotal(transactionDTO.getTotal());
-        transaction.setPaymentMethod(transactionDTO.getPaymentMethod());
-        transaction.setPaidAmount(transactionDTO.getPaidAmount());
-        transaction.setChange(transactionDTO.getChange());
+        
+        // Ensure payment method is not null, default to CASH if not provided
+        String paymentMethod = transactionDTO.getPaymentMethod();
+        if (paymentMethod == null || paymentMethod.trim().isEmpty()) {
+            paymentMethod = "CASH";
+        }
+        transaction.setPaymentMethod(paymentMethod.toLowerCase());
+        
+        transaction.setPaidAmount(transactionDTO.getPaidAmount() != null ? transactionDTO.getPaidAmount() : transactionDTO.getTotal());
+        transaction.setChange(transactionDTO.getChange() != null ? transactionDTO.getChange() : BigDecimal.ZERO);
         transaction.setStatus("COMPLETED");
         
         // Generate unique transaction number: TXN-<uuid>

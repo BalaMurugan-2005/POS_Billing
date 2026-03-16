@@ -39,6 +39,23 @@ public class Customer {
     @Column(name = "preferred_payment_method")
     private String preferredPaymentMethod;
 
+    @Column(name = "date_of_birth")
+    private java.time.LocalDate dateOfBirth;
+
+    @Column(name = "anniversary_date")
+    private java.time.LocalDate anniversaryDate;
+
+    @Builder.Default
+    @Column(name = "newsletter_subscription", nullable = false)
+    private Boolean newsletterSubscription = false;
+
+    @Builder.Default
+    @Column(name = "total_purchases")
+    private BigDecimal totalPurchases = BigDecimal.ZERO;
+
+    @Column(name = "last_purchase_date")
+    private LocalDateTime lastPurchaseDate;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

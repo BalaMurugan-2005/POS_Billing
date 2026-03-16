@@ -56,7 +56,11 @@ public class PaymentRequestService {
                     customer = Customer.builder()
                             .loyaltyNumber((String) body.get("loyalty_number"))
                             .tier((String) body.get("tier"))
-                            .loyaltyPoints(new BigDecimal(body.get("loyalty_points").toString()))
+                            .loyaltyPoints(body.get("loyalty_points") != null ? new BigDecimal(body.get("loyalty_points").toString()) : BigDecimal.ZERO)
+                            .newsletterSubscription(body.get("newsletter_subscription") != null ? (Boolean) body.get("newsletter_subscription") : false)
+                            .totalPurchases(body.get("total_purchases") != null ? new BigDecimal(body.get("total_purchases").toString()) : BigDecimal.ZERO)
+                            .qrCode((String) body.get("qr_code"))
+                            .preferredPaymentMethod((String) body.get("preferred_payment_method"))
                             .build();
                     
                     // Create a User reference with the Django user ID
@@ -78,6 +82,8 @@ public class PaymentRequestService {
                             .user(existingUser)
                             .tier("bronze")
                             .loyaltyPoints(BigDecimal.ZERO)
+                            .newsletterSubscription(false)
+                            .totalPurchases(BigDecimal.ZERO)
                             .build();
                     customer = customerRepository.save(customer);
                 } else {
