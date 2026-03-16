@@ -59,9 +59,26 @@ public class TransactionService {
         transaction.setChange(transactionDTO.getChange() != null ? transactionDTO.getChange() : BigDecimal.ZERO);
         transaction.setStatus("COMPLETED");
         
-        // Generate unique transaction number: TXN-<uuid>
-        String transactionNumber = "TXN-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+// Generate unique transaction number: TXN-<uuid> with retry logic for Render collisions
+        int maxRetries = 3;
+        String transactionNumber;
+        for (int i = 0; i < maxRetries; i++) {
+            transactionNumber = "TXN-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+            if (isTransactionNumberUnique(transactionNumber)) {
+                break;
+            }
+            if (i == maxRetries - 1) {
+                log.error("UUID collision after {} attempts for transaction_number: {}", maxRetries, transactionNumber);
+                throw new RuntimeException("Failed to generate unique transaction number after " + maxRetries + " attempts");
+            }
+            log.warn("UUID collision detected: {}, retry {}/{}", transactionNumber, i+1, maxRetries);
+        }
         transaction.setTransactionNumber(transactionNumber);
+        
+        // Helper method (add at end of class)
+        private boolean isTransactionNumberUnique(String transactionNumber) {
+            return !transactionRepository.existsByTransactionNumber(transactionNumber);
+        }
 
         // Set customer if provided
         if (transactionDTO.getCustomer() != null && transactionDTO.getCustomer().getId() != null) {

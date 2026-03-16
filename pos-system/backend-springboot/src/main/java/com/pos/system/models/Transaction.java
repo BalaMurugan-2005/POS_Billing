@@ -66,22 +66,14 @@ public class Transaction {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @PrePersist
+@PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
-        if (transactionNumber == null) {
-            transactionNumber = generateTransactionNumber();
-        }
     }
 
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
-    }
-
-    private String generateTransactionNumber() {
-        // Use UUID for guaranteed uniqueness instead of timestamp
-        return "TXN-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 }

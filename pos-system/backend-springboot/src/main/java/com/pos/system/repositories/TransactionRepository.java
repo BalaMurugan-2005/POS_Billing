@@ -15,6 +15,8 @@ import java.util.List;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     
+    boolean existsByTransactionNumber(String transactionNumber);
+    
     List<Transaction> findByCashierId(Long cashierId);
     
     List<Transaction> findByCustomerId(Long customerId);
