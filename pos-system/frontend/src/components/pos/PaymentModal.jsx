@@ -4,6 +4,7 @@ import { useCart } from '../../hooks/useCart';
 import { useOfflineSync } from '../../hooks/useOfflineSync';
 import { transactionService } from '../../services/transactionService';
 import { paymentRequestService } from '../../services/paymentRequestService';
+import { offlineService } from '../../services/offlineService';
 import { motion } from 'framer-motion';
 import { BanknotesIcon, CreditCardIcon, DevicePhoneMobileIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
@@ -81,6 +82,7 @@ const PaymentModal = ({ isOpen, onClose, onComplete }) => {
   const handleUPIPayment = () => sendDigitalRequest('upi');
 
   const completeTransaction = async () => {
+    if (processing) return;
     setProcessing(true);
 
     try {
@@ -121,7 +123,8 @@ const PaymentModal = ({ isOpen, onClose, onComplete }) => {
       clearCart();
       onClose();
     } catch (error) {
-      toast.error('Transaction failed');
+      const errMsg = error.response?.data?.message || error.message || 'Transaction failed';
+      toast.error(errMsg);
     } finally {
       setProcessing(false);
     }
@@ -219,7 +222,7 @@ const PaymentModal = ({ isOpen, onClose, onComplete }) => {
                         </button>
                       </div>
                     ) : (
-                      <DigitalWaitingState status={requestStatus} onComplete={completeTransaction} />
+                      <DigitalWaitingState status={requestStatus} onComplete={completeTransaction} processing={processing} />
                     )}
                   </div>
                 </Tab.Panel>
@@ -242,7 +245,7 @@ const PaymentModal = ({ isOpen, onClose, onComplete }) => {
                         </button>
                       </div>
                     ) : (
-                      <DigitalWaitingState status={requestStatus} onComplete={completeTransaction} />
+                      <DigitalWaitingState status={requestStatus} onComplete={completeTransaction} processing={processing} />
                     )}
                   </div>
                 </Tab.Panel>
@@ -270,7 +273,7 @@ const PaymentModal = ({ isOpen, onClose, onComplete }) => {
   );
 };
 
-const DigitalWaitingState = ({ status, onComplete }) => {
+const DigitalWaitingState = ({ status, onComplete, processing }) => {
   return (
     <div className="text-center py-8 animate-in fade-in duration-500">
       {status === 'waiting' ? (
@@ -295,9 +298,10 @@ const DigitalWaitingState = ({ status, onComplete }) => {
           </div>
           <button
             onClick={onComplete}
-            className="btn-primary w-full py-4 text-xl shadow-lg bg-green-600 hover:bg-green-700 border-none"
+            disabled={processing}
+            className={`btn-primary w-full py-4 text-xl shadow-lg bg-green-600 hover:bg-green-700 border-none ${processing ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            Finalize & Clear Table
+            {processing ? 'Finalizing...' : 'Finalize & Clear Table'}
           </button>
         </div>
       )}
