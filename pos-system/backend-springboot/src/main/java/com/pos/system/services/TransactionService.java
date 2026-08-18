@@ -59,8 +59,8 @@ public class TransactionService {
         transaction.setChange(transactionDTO.getChange() != null ? transactionDTO.getChange() : BigDecimal.ZERO);
         transaction.setStatus("COMPLETED");
         
-        // Generate unique transaction number: TXN-<uuid> - collision probability negligible
-        String transactionNumber = "TXN-" + UUID.randomUUID().toString().substring(0, 12).toUpperCase();
+        // Generate unique transaction number: TXN-<timestamp>-<uuid>
+        String transactionNumber = "TXN-" + System.currentTimeMillis() + "-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         transaction.setTransactionNumber(transactionNumber);
 
         // Set customer if provided

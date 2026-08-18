@@ -19,7 +19,7 @@ class User(AbstractUser):
     )
     
     email = models.EmailField(unique=True)
-    phone = PhoneNumberField(blank=True, null=True)
+    phone = models.CharField(max_length=30, blank=True, null=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='ROLE_CUSTOMER')
     profile_picture = models.ImageField(upload_to='profiles/', null=True, blank=True)
     is_active = models.BooleanField(default=True)
@@ -128,7 +128,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200)
     barcode = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='products')
+    category = models.CharField(max_length=100, blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     cost_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     tax_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0)

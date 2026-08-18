@@ -123,20 +123,16 @@ class ReportViewSet(viewsets.ViewSet):
         ).order_by('date')
         
         # Category breakdown
-        from api.models import Category
-        category_sales = []
-        for category in Category.objects.filter(is_active=True):
-            cat_total = transactions.filter(
-                items__product__category=category
-            ).aggregate(
-                total=Sum('items__subtotal')
-            )['total'] or 0
-            
-            if cat_total > 0:
-                category_sales.append({
-                    'category': category.name,
-                    'total': float(cat_total)
-                })
+        cat_sales = transactions.filter(
+            items__product__category__isnull=False
+        ).values('items__product__category').annotate(
+            total=Sum('items__subtotal')
+        )
+        
+        category_sales = [{
+            'category': item['items__product__category'],
+            'total': float(item['total'] or 0)
+        } for item in cat_sales if item['items__product__category']]
         
         # Summary
         summary = transactions.aggregate(
@@ -214,7 +210,7 @@ class ReportViewSet(viewsets.ViewSet):
                 data.append({
                     'id': product.id,
                     'name': product.name,
-                    'category': product.category.name if product.category else 'Uncategorized',
+                    'category': product.category if product.category else 'Uncategorized',
                     'quantity_sold': product.quantity_sold or 0,
                     'revenue': float(product.revenue or 0),
                     'profit': float(product.profit or 0),
@@ -232,12 +228,12 @@ class ReportViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'])
     def inventory_report(self, request):
         """Generate inventory report"""
-        products = Product.objects.filter(is_active=True).select_related('category')
+        products = Product.objects.filter(is_active=True)
         
         data = [{
             'id': p.id,
             'name': p.name,
-            'category': p.category.name if p.category else 'Uncategorized',
+            'category': p.category if p.category else 'Uncategorized',
             'stock': p.stock_quantity,
             'min_stock': p.min_stock_level,
             'max_stock': p.max_stock_level,

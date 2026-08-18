@@ -137,26 +137,19 @@ class AnalyticsViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'])
     def category_performance(self, request):
         """Get sales by category"""
-        from api.models import Category
+        cat_stats = Transaction.objects.filter(
+            status='completed',
+            items__product__category__isnull=False
+        ).values('items__product__category').annotate(
+            total=Sum('items__subtotal'),
+            count=Count('id', distinct=True)
+        )
         
-        categories = Category.objects.filter(is_active=True)
-        data = []
-        
-        for category in categories:
-            sales = Transaction.objects.filter(
-                items__product__category=category,
-                status='completed'
-            ).aggregate(
-                total=Sum('items__subtotal'),
-                count=Count('id', distinct=True)
-            )
-            
-            if sales['total']:
-                data.append({
-                    'category': category.name,
-                    'sales': float(sales['total']),
-                    'transactions': sales['count']
-                })
+        data = [{
+            'category': item['items__product__category'],
+            'sales': float(item['total'] or 0),
+            'transactions': item['count']
+        } for item in cat_stats if item['items__product__category']]
         
         return Response(sorted(data, key=lambda x: x['sales'], reverse=True))
     

@@ -7,11 +7,11 @@ export default defineConfig(({ mode }) => {
     return {
         plugins: [react()],
         server: {
-            port: 5174,
+            port: 5173,
             proxy: {
                 // In development, proxy /api calls to the local Spring Boot backend
                 '/api': {
-                    target: env.VITE_API_URL ? env.VITE_API_URL.replace('/api', '') : 'http://localhost:8081',
+                    target: env.VITE_API_URL ? env.VITE_API_URL.replace('/api', '') : 'http://localhost:8080',
                     changeOrigin: true,
                 }
             }

@@ -33,6 +33,7 @@ public class JwtUtil {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", userDetails.getAuthorities());
+        claims.put("token_type", "access");
         if (userDetails instanceof com.pos.system.models.User) {
             claims.put("user_id", ((com.pos.system.models.User) userDetails).getId());
         }
