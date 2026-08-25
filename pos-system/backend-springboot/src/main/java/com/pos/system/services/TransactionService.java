@@ -86,7 +86,7 @@ public class TransactionService {
         // Process items and update inventory
         List<TransactionItem> items = new ArrayList<>();
         for (TransactionItemDTO itemDTO : transactionDTO.getItems()) {
-            Product product = productRepository.findById(itemDTO.getProductId())
+            Product product = productRepository.findByIdWithLock(itemDTO.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found: " + itemDTO.getProductId()));
 
             // Check stock
